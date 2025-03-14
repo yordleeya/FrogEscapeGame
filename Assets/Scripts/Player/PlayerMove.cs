@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using Sirenix.OdinInspector;
@@ -9,6 +9,8 @@ public class PlayerMove : MonoBehaviour
 
     Rigidbody2D rigid;
 
+    [Required("stat ì—ì…‹ì„ ë„£ì§€ ì•Šìœ¼ë©´ í”Œë ˆì´ì–´ê°€ ì›€ì§ì¼ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n" +
+    "PlayerStatsí˜•ì‹ì˜ ìŠ¤í¬ë¦½í„°ë¸” ì˜¤ë¸Œì íŠ¸ë¥¼ ë„£ì–´ì£¼ì„¸ìš”.")]
     [SerializeField]
     PlayerStats stats;
 
@@ -20,8 +22,6 @@ public class PlayerMove : MonoBehaviour
 
     bool isMoving = false;
 
-    [Required("stat ¿¡¼ÂÀ» ³ÖÁö ¾ÊÀ¸¸é ÇÃ·¹ÀÌ¾î°¡ ¿òÁ÷ÀÏ ¼ö ¾ø½À´Ï´Ù.\n" +
-        "PlayerStatsÇü½ÄÀÇ ½ºÅ©¸³ÅÍºí ¿ÀºêÁ§Æ®¸¦ ³Ö¾îÁÖ¼¼¿ä.")]
 
 
     private void Awake()
@@ -67,7 +67,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (context.started)
         {
-            Debug.Log("Á¡ÇÁ");
+            Debug.Log("ì í”„");
         }
     }
 }
