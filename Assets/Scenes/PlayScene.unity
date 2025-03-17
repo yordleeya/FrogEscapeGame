@@ -825,23 +825,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
       propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
       propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 11500000, guid: 666f2002ea5530d4c970cba8b0649d63, type: 3}
+      objectReference: {fileID: 7977273127308206253}
     - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
       propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
       propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: 
+      value: OnRope
       objectReference: {fileID: 0}
     - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
       propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      value: RopeAction, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
       propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
@@ -859,6 +859,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6211988839413683501, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 7977273127308206253}
     - targetCorrespondingSourceObject: {fileID: 6211988839413683501, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7977273127308206252}
@@ -889,6 +892,21 @@ SpringJoint2D:
   m_Distance: 0.4
   m_DampingRatio: 0
   m_Frequency: 1
+--- !u!114 &7977273127308206253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7977273127308206251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 666f2002ea5530d4c970cba8b0649d63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GrapplingObj:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

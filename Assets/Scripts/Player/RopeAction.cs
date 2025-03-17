@@ -8,34 +8,24 @@ public class RopeAction : MonoBehaviour
     //2. 라인랜더리
     //3. 스프링조인트
 
-    public Transform player;
-    Camera cam;
     RaycastHit hit;
-    public LayerMask GrapplingObj;
 
-    void Start()
+    [SerializeField]
+    LayerMask GrapplingObj;
+
+    void RopeShoot(Vector2 mousePosition)
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void RopeShoot()
-    {
-        if (Physics.Raycast(player.transform.position, player.transform.forward, out hit, 100f, GrapplingObj))
+        if (Physics.Raycast(transform.position, mousePosition, out hit, 100f, GrapplingObj))
         {
-            print("장애물 검출!");
+            Debug.Log("장애물 검출!");
         }
     }
     public void OnRope(InputAction.CallbackContext context)
     {
         if(context.started)
         {
-            RopeShoot();
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            RopeShoot(mousePosition);
         }
     }
 }
