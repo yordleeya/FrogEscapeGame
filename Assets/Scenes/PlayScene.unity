@@ -807,6 +807,50 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_ActionId
+      value: fb759908-f347-41af-b4b9-d63142574b3d
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_ActionName
+      value: 'Player/Rope[/Mouse/leftButton]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11500000, guid: 666f2002ea5530d4c970cba8b0649d63, type: 3}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: RopeAction.OnRope
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246721321103097685, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6211988839413683501, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
       propertyPath: m_Name
       value: Player
@@ -814,8 +858,37 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6211988839413683501, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7977273127308206252}
   m_SourcePrefab: {fileID: 100100000, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+--- !u!1 &7977273127308206251 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6211988839413683501, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+  m_PrefabInstance: {fileID: 7977273127308206250}
+  m_PrefabAsset: {fileID: 0}
+--- !u!231 &7977273127308206252
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7977273127308206251}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 3
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 1
+  m_Distance: 0.4
+  m_DampingRatio: 0
+  m_Frequency: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
