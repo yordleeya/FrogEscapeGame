@@ -1,34 +1,44 @@
-﻿using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using Sirenix.OdinInspector;
+using System.Collections.Generic;
 using UnityEngine.Events;
-using Sirenix.OdinInspector;
+using UnityEngine.InputSystem;
+using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
     public UnityEvent OnPlayerMove;
-
-    Rigidbody2D rigid;
+    public UnityEvent OnPlayerJump;
 
     [Required("stat 에셋을 넣지 않으면 플레이어가 움직일 수 없습니다.\n" +
     "PlayerStats형식의 스크립터블 오브젝트를 넣어주세요.")]
     [SerializeField]
     PlayerStats stats;
 
+    public enum JumpType
+    {
+        MouseRelease,
+        EatFly
+    }
+
+    private readonly Dictionary<JumpType, float> jumpMultipliers = new()
+    {
+        { JumpType.MouseRelease, 1f },
+        { JumpType.EatFly, 2f }
+    };
+
+    Rigidbody2D rigid;
     float speed;
-
+    float jumpPower;
     Vector2 maxVelocity;
-
     float moveX;
-
     bool isMoving = false;
-
-
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
 
         speed = stats.Speed;
+        jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
     }
 
@@ -46,6 +56,7 @@ public class PlayerMove : MonoBehaviour
             rigid.linearVelocityX *= 0.8f;
         }
     }
+
     public void OnMove(InputAction.CallbackContext context)
     {
         if (!context.canceled)
@@ -53,7 +64,6 @@ public class PlayerMove : MonoBehaviour
             Vector2 dir = context.ReadValue<Vector2>();
 
             moveX = dir.x * speed;
-
             isMoving = true;
             OnPlayerMove?.Invoke();
         }
@@ -63,11 +73,19 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    public void OnJump(InputAction.CallbackContext context)
+    public void Jump(Vector2 direction, JumpType jumpType)
     {
-        if (context.started)
+
+        OnPlayerJump?.Invoke();
+
+        if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
         {
-            Debug.Log("점프");
+            rigid.AddForce(direction * jumpPower * multiplier, ForceMode2D.Impulse);
+        }
+        else
+        {
+            Debug.LogWarning($"JumpType {jumpType}의 가중치가 설정되지 않았습니다.");
         }
     }
+
 }

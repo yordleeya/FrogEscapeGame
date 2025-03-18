@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStamina: 100
   speed: 1
-  jumpPower: 2
+  jumpPower: 5
   powerGainSpeed: 1
   maxVelocity: {x: 7, y: 20}
+  tongueSpeed: 2

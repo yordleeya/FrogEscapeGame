@@ -3,29 +3,52 @@ using UnityEngine.InputSystem;
 
 public class RopeAction : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    //1. 레이캐스트
-    //2. 라인랜더리
-    //3. 스프링조인트
 
-    RaycastHit hit;
+    [SerializeField]
+    PlayerStats stat;
+
+    float tongueSpeed;
 
     [SerializeField]
     LayerMask GrapplingObj;
 
-    void RopeShoot(Vector2 mousePosition)
+    [SerializeField]
+    Rigidbody2D tongueEndRigid;
+
+    PlayerMove move;
+
+    private void Awake()
     {
-        if (Physics.Raycast(transform.position, mousePosition, out hit, 100f, GrapplingObj))
-        {
-            Debug.Log("장애물 검출!");
-        }
+        move = GetComponent<PlayerMove>();
+
+        tongueSpeed = stat.TongueSpeed;
     }
+
+    void RopeShoot(Vector2 direction)
+    {
+        tongueEndRigid.AddForce(direction * tongueSpeed, ForceMode2D.Impulse);
+    }
+
     public void OnRope(InputAction.CallbackContext context)
     {
-        if(context.started)
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+        // 마우스 위치를 월드 좌표로 변환
+        Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(mousePosition);
+
+        // 현재 플레이어 위치
+        Vector2 playerPos = transform.position;
+
+        // 방향 벡터 계산 (목표 지점 - 현재 위치)
+        Vector2 direction = (worldMousePos - playerPos).normalized;
+
+        if (context.started)
         {
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
-            RopeShoot(mousePosition);
+            RopeShoot(direction);
+        }
+        else if(context.canceled)
+        {
+            move.Jump(direction, PlayerMove.JumpType.MouseRelease);
         }
     }
 }
