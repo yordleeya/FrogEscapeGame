@@ -175,5 +175,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0441f8189ae926244bedcc5359b5b02d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 6649882207434166867, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+  playerMove: {fileID: 0}
   fallSpeed: 2

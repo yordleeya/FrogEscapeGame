@@ -1,30 +1,64 @@
+using System.Collections;
 using UnityEngine;
 
 public class CoinManager : MonoBehaviour
 {
+    [SerializeField]
+    int coinNum;
 
+    [SerializeField]
+    float createTime = 1f;
 
-    public float speed = 5f;
-    private Rigidbody2D rigid;
-    float currentTIme;
-    public float createTime = 1f;
-    public GameObject CoinFactory;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField]
+    GameObject coin;
+
+    [SerializeField]
+    GameObject[] coinArray;
+
+    public GameObject[] CoinArray { get => coinArray; }
+
+    Coroutine createCoinCoroutine;
+
+    [SerializeField]
+    Vector2 spawnPoint;
+
+    private void Start()
     {
-        rigid = GetComponent<Rigidbody2D>();
-     
+        GameObject nowCoin;
+        coinArray = new GameObject[coinNum];
+
+        for (int i = 0; i < coinNum; i++)
+        {
+            nowCoin = Instantiate(coin);
+            nowCoin.transform.parent = transform;
+            nowCoin.SetActive(false);
+
+            coinArray[i] = nowCoin;
+        }
+
+        createCoinCoroutine = StartCoroutine(CreateCoin());
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        currentTIme += Time.deltaTime;
-        if (currentTIme > createTime)
+        StopCoroutine(createCoinCoroutine);
+    }
+
+    IEnumerator CreateCoin()
+    {
+        yield return new WaitForSeconds(createTime);
+
+        foreach (GameObject c in coinArray)
         {
-            GameObject Coin = Instantiate(CoinFactory);
-            Coin.transform.position = transform.position;
-            currentTIme = 0;
+            if (!c.activeSelf)
+            {
+                c.transform.position = spawnPoint;
+                c.SetActive(true);
+                break;
+            }
         }
+
+        createCoinCoroutine = StartCoroutine(CreateCoin());
+
     }
 }

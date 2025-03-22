@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using System.Collections;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -36,7 +37,10 @@ public class PlayerMove : MonoBehaviour
     Vector2 maxVelocity;
     float moveX;
     bool isMoving = false;
+    float stunTime;
+
     private bool isMovementStopped = false;
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -47,6 +51,7 @@ public class PlayerMove : MonoBehaviour
         speed = stats.Speed;
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
+        stunTime = stats.StunTime;
     }
 
     private void FixedUpdate()
@@ -124,6 +129,19 @@ public class PlayerMove : MonoBehaviour
         {
             transform.localEulerAngles = Vector3.zero;
         }
+        else if(collision.transform.CompareTag("Coin"))
+        {
+            StopMovement();
+            collision.gameObject.SetActive(false);
+
+            Invoke("ResumeMovement", stunTime);
+        }
+    }
+
+    public IEnumerator ResumePlayerMovementAfterDelay()
+    {
+        yield return new WaitForSeconds(1f); // 1초 대기
+        ResumeMovement(); // 이동 재개
     }
 
 }
