@@ -19,13 +19,15 @@ public class PlayerMove : MonoBehaviour
     public enum JumpType
     {
         MouseRelease,
-        EatFly
+        EatFly,
+        Mushroom
     }
 
     private readonly Dictionary<JumpType, float> jumpMultipliers = new()
     {
         { JumpType.MouseRelease, 1f },
-        { JumpType.EatFly, 2f }
+        { JumpType.EatFly, 2f },
+        {JumpType.Mushroom, 2f }
     };
 
     Rigidbody2D rigid;
@@ -101,9 +103,14 @@ public class PlayerMove : MonoBehaviour
 
         OnPlayerJump?.Invoke();
 
+        rigid.linearVelocityY = 0; // 기존 속도 초기화
+
+
         if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
         {
             rigid.AddForce(direction * jumpPower * multiplier, ForceMode2D.Impulse);
+
+            Debug.Log(jumpType + "에 의해 " + direction + "방향으로 점프");
         }
         else
         {
@@ -113,14 +120,12 @@ public class PlayerMove : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Mushroom"))
+        if(collision.transform.CompareTag("Land"))
         {
-            Vector2 randomDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(0.5f, 1f)).normalized;
-            rigid.linearVelocity = Vector2.zero; // 기존 속도 초기화
-            rigid.AddForce(randomDirection * jumpForce, ForceMode2D.Impulse);
-            Debug.Log("버섯과 충돌! 랜덤 점프 방향: " + randomDirection);
+            transform.localEulerAngles = Vector3.zero;
         }
     }
+
 }
 
 
