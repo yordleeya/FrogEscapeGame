@@ -2188,7 +2188,7 @@ MonoBehaviour:
   GrapplingObj:
     serializedVersion: 2
     m_Bits: 0
-  tongueEndRigid: {fileID: 0}
+  tongueEndRigid: {fileID: 312388301}
 --- !u!4 &7977273127308206254 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1202830951027428908, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
