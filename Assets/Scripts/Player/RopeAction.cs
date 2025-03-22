@@ -33,8 +33,9 @@ public class RopeAction : MonoBehaviour
     {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
 
-        // 마우스 위치를 월드 좌표로 변환
-        Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(mousePosition);
+        // 마우스 위치를 월드 좌표로 변환 (Vector3 → Vector2 변환)
+        Vector3 worldMousePos3D = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
+        Vector2 worldMousePos = new Vector2(worldMousePos3D.x, worldMousePos3D.y);
 
         // 현재 플레이어 위치
         Vector2 playerPos = transform.position;
@@ -44,11 +45,12 @@ public class RopeAction : MonoBehaviour
 
         if (context.started)
         {
-            RopeShoot(direction);
+            RopeShoot(direction); // 로프 발사
         }
-        else if(context.canceled)
+        else if (context.canceled)
         {
-            move.Jump(direction, PlayerMove.JumpType.MouseRelease);
+            move.Jump(direction, PlayerMove.JumpType.MouseRelease); // 마우스 떼면 점프
         }
     }
+
 }

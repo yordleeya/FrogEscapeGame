@@ -97,6 +97,13 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.transform.CompareTag("Land"))
+        {
+            transform.localEulerAngles = Vector3.zero;
+        }
+    }
 
 }
 

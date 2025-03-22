@@ -5,11 +5,12 @@ TagManager:
   serializedVersion: 3
   tags:
   - Mushroom
+  - Land
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - 
@@ -41,6 +42,15 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Land
+    uniqueID: 4007221509
+    locked: 0
+  - name: Player
+    uniqueID: 4091588405
+    locked: 0
+  - name: Obstacles
+    uniqueID: 3398607053
     locked: 0
   m_RenderingLayers:
   - Default
