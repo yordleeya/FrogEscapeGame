@@ -8,6 +8,8 @@ public class PlayerMove : MonoBehaviour
 {
     public UnityEvent OnPlayerMove;
     public UnityEvent OnPlayerJump;
+    public float jumpForce = 10f;
+
 
     [Required("stat 에셋을 넣지 않으면 플레이어가 움직일 수 없습니다.\n" +
     "PlayerStats형식의 스크립터블 오브젝트를 넣어주세요.")]
@@ -88,4 +90,17 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Mushroom"))
+        {
+            Vector2 randomDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(0.5f, 1f)).normalized;
+            rigid.linearVelocity = Vector2.zero; // 기존 속도 초기화
+            rigid.AddForce(randomDirection * jumpForce, ForceMode2D.Impulse);
+            Debug.Log("버섯과 충돌! 랜덤 점프 방향: " + randomDirection);
+        }
+    }
 }
+
+
+
