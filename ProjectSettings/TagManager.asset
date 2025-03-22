@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Mushroom
   - Coin
+  - Object
+  - Obstacle
+  - Land
   layers:
   - Default
   - TransparentFX
@@ -13,10 +16,10 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Obstacle
+  - Object
+  - Land
   - 
   - 
   - 
@@ -42,6 +45,18 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 1694565479
+    locked: 0
+  - name: Object
+    uniqueID: 3826102827
+    locked: 0
+  - name: Obstacle
+    uniqueID: 2609026183
+    locked: 0
+  - name: Land
+    uniqueID: 4269925885
     locked: 0
   m_RenderingLayers:
   - Default
