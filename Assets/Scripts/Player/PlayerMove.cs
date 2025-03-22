@@ -34,11 +34,14 @@ public class PlayerMove : MonoBehaviour
     Vector2 maxVelocity;
     float moveX;
     bool isMoving = false;
-
+    private bool isMovementStopped = false;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
-
+        if (rigid == null)
+        {
+            Debug.LogError("Rigidbody2D가 Player 오브젝트에 할당되지 않았습니다.");
+        }
         speed = stats.Speed;
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
@@ -46,6 +49,12 @@ public class PlayerMove : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isMovementStopped)
+        {
+            rigid.linearVelocity = Vector2.zero; // 이동 멈추기
+            return;
+        }
+
         if (isMoving)
         {
             if (Mathf.Abs(rigid.linearVelocityX) < Mathf.Abs(maxVelocity.x))
@@ -73,6 +82,18 @@ public class PlayerMove : MonoBehaviour
         {
             isMoving = false;
         }
+
+    }
+    public void StopMovement()
+    {
+        isMovementStopped = true; // 이동 멈춤
+        rigid.linearVelocity = Vector2.zero; // Rigidbody2D의 속도도 0으로 설정
+    }
+
+    // 이동 재개
+    public void ResumeMovement()
+    {
+        isMovementStopped = false; // 이동 재개
     }
 
     public void Jump(Vector2 direction, JumpType jumpType)
