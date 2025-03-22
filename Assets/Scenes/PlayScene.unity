@@ -1569,6 +1569,7 @@ GameObject:
   - component: {fileID: 1520476737}
   - component: {fileID: 1520476740}
   - component: {fileID: 1520476739}
+  - component: {fileID: 1520476741}
   m_Layer: 0
   m_Name: Mushroom
   m_TagString: Mushroom
@@ -1640,7 +1641,7 @@ Transform:
   m_GameObject: {fileID: 1520476736}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.07, y: 0.13, z: 0}
+  m_LocalPosition: {x: 1.07, y: -3.42, z: 0}
   m_LocalScale: {x: 1.077, y: 0.3965, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1719,6 +1720,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 2}
   m_EdgeRadius: 0
+--- !u!114 &1520476741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520476736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a19279c63b7844cb072fcbdfcd3cc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1627195116
 GameObject:
   m_ObjectHideFlags: 0
@@ -2129,6 +2142,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6211988839413683501, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2184,11 +2201,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666f2002ea5530d4c970cba8b0649d63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stat: {fileID: 0}
+  stat: {fileID: 11400000, guid: 270276465f8930247b98f3f3540c78f5, type: 2}
   GrapplingObj:
     serializedVersion: 2
     m_Bits: 0
-  tongueEndRigid: {fileID: 0}
+  tongueEndRigid: {fileID: 312388301}
 --- !u!4 &7977273127308206254 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1202830951027428908, guid: 9e2007f428c704b47ad3b4c4c8237b5c, type: 3}
