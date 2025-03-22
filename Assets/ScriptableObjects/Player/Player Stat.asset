@@ -18,3 +18,4 @@ MonoBehaviour:
   powerGainSpeed: 1
   maxVelocity: {x: 7, y: 20}
   tongueSpeed: 5
+  stunTime: 0.5

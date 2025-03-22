@@ -6,9 +6,6 @@ public class CoinManager : MonoBehaviour
     [SerializeField]
     int coinNum;
 
-    public float speed = 5f;
-    private Rigidbody2D rigid;
-
     [SerializeField]
     float createTime = 1f;
 
@@ -22,11 +19,8 @@ public class CoinManager : MonoBehaviour
 
     Coroutine createCoinCoroutine;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
-    {
-        rigid = GetComponent<Rigidbody2D>();
-    }
+    [SerializeField]
+    Vector2 spawnPoint;
 
     private void Start()
     {
@@ -58,6 +52,7 @@ public class CoinManager : MonoBehaviour
         {
             if (!c.activeSelf)
             {
+                c.transform.position = spawnPoint;
                 c.SetActive(true);
                 break;
             }
