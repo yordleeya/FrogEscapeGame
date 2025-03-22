@@ -4,5 +4,5 @@
 - Active game object:
   - Name: Player
   - Tag: Player
-  - Layer: Default
+  - Layer: 3
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
