@@ -8,11 +8,9 @@ public class Coin : MonoBehaviour
 
     Rigidbody2D rigid;
 
-    [SerializeField]
-    float fallSpeed = 1f;
+    float fallSpeed;
 
-    [SerializeField]
-    float disableTime = 3f;
+    float disableTime;
 
     Coroutine disableCoroutine;
 
@@ -31,6 +29,12 @@ public class Coin : MonoBehaviour
     {
         rigid.linearVelocity = Vector2.zero;
         disableCoroutine = null;
+    }
+
+    public void Init(float _disableTime, float _fallSpeed)
+    {
+        disableTime = _disableTime;
+        fallSpeed = _fallSpeed;
     }
 
     IEnumerator Disable()

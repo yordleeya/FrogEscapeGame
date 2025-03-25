@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine;
 
@@ -9,18 +10,26 @@ public class CoinManager : MonoBehaviour
     [SerializeField]
     float createTime = 1f;
 
+    [FoldoutGroup("Coin data")]
+    [SerializeField]
+    float coinDisableTime;
+
+    [FoldoutGroup("Coin data")]
+    [SerializeField]
+    float coinFallSpeed;
+
+    [FoldoutGroup("Coin data")]
     [SerializeField]
     GameObject coin;
 
+    [FoldoutGroup("Coin data")]
     [SerializeField]
     GameObject[] coinArray;
 
+    [FoldoutGroup("Coin data")]
     public GameObject[] CoinArray { get => coinArray; }
 
     Coroutine createCoinCoroutine;
-
-    [SerializeField]
-    Vector2 spawnPoint;
 
     private void Start()
     {
@@ -32,7 +41,7 @@ public class CoinManager : MonoBehaviour
             nowCoin = Instantiate(coin);
             nowCoin.transform.parent = transform;
             nowCoin.SetActive(false);
-
+            
             coinArray[i] = nowCoin;
         }
 
@@ -44,6 +53,8 @@ public class CoinManager : MonoBehaviour
         StopCoroutine(createCoinCoroutine);
     }
 
+    Coin coinScript;
+
     IEnumerator CreateCoin()
     {
         yield return new WaitForSeconds(createTime);
@@ -52,8 +63,10 @@ public class CoinManager : MonoBehaviour
         {
             if (!c.activeSelf)
             {
-                c.transform.position = spawnPoint;
+                coinScript = c.GetComponent<Coin>();
                 c.SetActive(true);
+                c.transform.position = transform.position;
+                coinScript.Init(coinDisableTime, coinFallSpeed);
                 break;
             }
         }

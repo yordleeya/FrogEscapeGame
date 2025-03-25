@@ -39,6 +39,9 @@ public class PlayerMove : MonoBehaviour
     bool isMoving = false;
     float stunTime;
 
+    [SerializeField]
+    RopeAction rope;
+
     private bool isMovementStopped = false;
 
     private void Awake()
@@ -52,6 +55,8 @@ public class PlayerMove : MonoBehaviour
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
         stunTime = stats.StunTime;
+
+        rope.Init(stats.TongueSpeed);
     }
 
     private void FixedUpdate()
@@ -79,17 +84,42 @@ public class PlayerMove : MonoBehaviour
     {
         if (!context.canceled)
         {
-            Vector2 dir = context.ReadValue<Vector2>();
+            if (!rope.gameObject.activeSelf)
+            {
+                Vector2 dir = context.ReadValue<Vector2>();
 
-            moveX = dir.x * speed;
-            isMoving = true;
-            OnPlayerMove?.Invoke();
+                moveX = dir.x * speed;
+                isMoving = true;
+                OnPlayerMove?.Invoke();
+            }
         }
         else
         {
             isMoving = false;
         }
+    }
 
+    public void OnRope(InputAction.CallbackContext context)
+    {
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+        Vector3 worldMousePos3D = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
+        Vector2 worldMousePos = new Vector2(worldMousePos3D.x, worldMousePos3D.y);
+
+        Vector2 playerPos = transform.position;
+
+        Vector2 direction = (worldMousePos - playerPos).normalized;
+
+        if (context.started)
+        {
+            rope.gameObject.SetActive(true);
+            rope.RopeShoot(direction); // 로프 발사
+        }
+        else if (context.canceled && rope.gameObject.activeSelf && rope.IsAttached)
+        {
+            Jump(direction, JumpType.MouseRelease); // 마우스 떼면 점프
+            rope.gameObject.SetActive(false);
+        }
     }
     public void StopMovement()
     {
@@ -105,7 +135,6 @@ public class PlayerMove : MonoBehaviour
 
     public void Jump(Vector2 direction, JumpType jumpType)
     {
-
         OnPlayerJump?.Invoke();
 
         rigid.linearVelocityY = 0; // 기존 속도 초기화
@@ -122,6 +151,8 @@ public class PlayerMove : MonoBehaviour
             Debug.LogWarning($"JumpType {jumpType}의 가중치가 설정되지 않았습니다.");
         }
     }
+
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

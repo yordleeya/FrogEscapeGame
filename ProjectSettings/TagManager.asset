@@ -9,6 +9,8 @@ TagManager:
   - Object
   - Obstacle
   - Land
+  - Platform
+  - Tongue
   layers:
   - Default
   - TransparentFX
@@ -20,8 +22,8 @@ TagManager:
   - Obstacle
   - Object
   - Land
-  - 
-  - 
+  - Platform
+  - Tongue
   - 
   - 
   - 
@@ -43,20 +45,23 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: backGround
+    uniqueID: 2976643267
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Player
-    uniqueID: 1694565479
-    locked: 0
-  - name: Object
-    uniqueID: 3826102827
+  - name: Land
+    uniqueID: 4269925885
     locked: 0
   - name: Obstacle
     uniqueID: 2609026183
     locked: 0
-  - name: Land
-    uniqueID: 4269925885
+  - name: Object
+    uniqueID: 3826102827
+    locked: 0
+  - name: Player
+    uniqueID: 1694565479
     locked: 0
   m_RenderingLayers:
   - Default

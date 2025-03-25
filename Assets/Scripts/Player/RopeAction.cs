@@ -1,56 +1,87 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class RopeAction : MonoBehaviour
 {
-
-    [SerializeField]
-    PlayerStats stat;
+    public UnityEvent OnAttached;
 
     float tongueSpeed;
 
-    [SerializeField]
-    LayerMask GrapplingObj;
+    Rigidbody2D rigid;
 
     [SerializeField]
-    Rigidbody2D tongueEndRigid;
+    float disableTime;
+    Coroutine disableCoroutine;
 
-    PlayerMove move;
+    bool isAttached = false;
+    public bool IsAttached { get => isAttached; }
 
+    
     private void Awake()
     {
-        move = GetComponent<PlayerMove>();
-
-        tongueSpeed = stat.TongueSpeed;
+        rigid = GetComponent<Rigidbody2D>();
     }
 
-    void RopeShoot(Vector2 direction)
+    private void OnEnable()
     {
-        tongueEndRigid.AddForce(direction * tongueSpeed, ForceMode2D.Impulse);
+        disableCoroutine = StartCoroutine(DisableCoroutine());
     }
 
-    public void OnRope(InputAction.CallbackContext context)
+    private void OnDisable()
     {
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
-
-        // 마우스 위치를 월드 좌표로 변환 (Vector3 → Vector2 변환)
-        Vector3 worldMousePos3D = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
-        Vector2 worldMousePos = new Vector2(worldMousePos3D.x, worldMousePos3D.y);
-
-        // 현재 플레이어 위치
-        Vector2 playerPos = transform.position;
-
-        // 방향 벡터 계산 (목표 지점 - 현재 위치)
-        Vector2 direction = (worldMousePos - playerPos).normalized;
-
-        if (context.started)
+        if (disableCoroutine != null)
         {
-            RopeShoot(direction); // 로프 발사
+            StopCoroutine(disableCoroutine);
+            disableCoroutine = null;
         }
-        else if (context.canceled)
+
+        if(isAttached)
         {
-            move.Jump(direction, PlayerMove.JumpType.MouseRelease); // 마우스 떼면 점프
+            isAttached = false;
+        }
+
+        rigid.linearVelocity = Vector2.zero;
+        rigid.bodyType = RigidbodyType2D.Kinematic;
+
+        transform.position = transform.parent.position;
+    }
+    public void Init(float _tongueSpeed)
+    {
+        tongueSpeed = _tongueSpeed;
+    }
+
+    public void RopeShoot(Vector2 direction)
+    {
+        rigid.bodyType = RigidbodyType2D.Dynamic;
+        rigid.AddForce(direction * tongueSpeed, ForceMode2D.Impulse);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Platform"))
+        {
+
+            StopCoroutine(disableCoroutine);
+
+            rigid.bodyType = RigidbodyType2D.Kinematic;
+            rigid.linearVelocity = Vector2.zero;
+
+            isAttached = true;
+            OnAttached?.Invoke();
+        }
+
+        if(collision.CompareTag("Land"))
+        {
+            gameObject.SetActive(false);
         }
     }
 
+    IEnumerator DisableCoroutine()
+    {
+        yield return new WaitForSeconds(disableTime);
+        gameObject.SetActive(false);
+        
+    }
 }

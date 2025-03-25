@@ -128,14 +128,10 @@ GameObject:
   - component: {fileID: 1202830951027428908}
   - component: {fileID: 8487789736843744418}
   - component: {fileID: 4246721321103097685}
-  - component: {fileID: 1470782118350160741}
-  - component: {fileID: 4611368204755314352}
   - component: {fileID: 6649882207434166867}
   - component: {fileID: 3918373210669758655}
   - component: {fileID: 2466233998810829727}
-  - component: {fileID: 7405350527391997719}
   - component: {fileID: 4050106410340808036}
-  - component: {fileID: 2399248042461261531}
   - component: {fileID: 6658359922887251664}
   m_Layer: 6
   m_Name: Player
@@ -203,7 +199,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1694565479
-  m_SortingLayer: 1
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -342367820485729113, guid: d07547d62fbaa8c42a89cc4416e55e89, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -315,7 +311,7 @@ MonoBehaviour:
     m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1470782118350160741}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: RopeAction, Assembly-CSharp
         m_MethodName: OnRope
         m_Mode: 0
@@ -334,40 +330,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &1470782118350160741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6211988839413683501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 666f2002ea5530d4c970cba8b0649d63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stat: {fileID: 11400000, guid: 270276465f8930247b98f3f3540c78f5, type: 2}
-  GrapplingObj:
-    serializedVersion: 2
-    m_Bits: 0
-  tongueEndRigid: {fileID: 0}
---- !u!114 &4611368204755314352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6211988839413683501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 666f2002ea5530d4c970cba8b0649d63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stat: {fileID: 11400000, guid: 270276465f8930247b98f3f3540c78f5, type: 2}
-  GrapplingObj:
-    serializedVersion: 2
-    m_Bits: 0
-  tongueEndRigid: {fileID: 6880364801856342606}
 --- !u!114 &6649882207434166867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,6 +350,7 @@ MonoBehaviour:
       m_Calls: []
   jumpForce: 10
   stats: {fileID: 11400000, guid: 270276465f8930247b98f3f3540c78f5, type: 2}
+  rope: {fileID: 0}
 --- !u!50 &3918373210669758655
 Rigidbody2D:
   serializedVersion: 5
@@ -461,27 +424,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!231 &7405350527391997719
-SpringJoint2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6211988839413683501}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 6880364801856342606}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_BreakAction: 3
-  m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: 0}
-  m_AutoConfigureDistance: 1
-  m_Distance: 0.005
-  m_DampingRatio: 0
-  m_Frequency: 1
 --- !u!114 &4050106410340808036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,8 +443,8 @@ MonoBehaviour:
   m_UseRendererSilhouette: 1
   m_CastsShadows: 1
   m_SelfShadows: 0
-  m_AlphaCutoff: 0.108
-  m_ApplyToSortingLayers: 000000000559d9ee0559d9ee35afe0f335afe0f3cda092cacda092ca670401652bb20de48794829bfde581fe
+  m_AlphaCutoff: 0.088
+  m_ApplyToSortingLayers: c3f86bb100000000fde581fe8794829b2bb20de467040165
   m_ShapePath:
   - {x: -0.49999997, y: -0.5, z: 0}
   - {x: -0.38074616, y: 0.14428042, z: 0}
@@ -510,51 +452,31 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   m_ShapePathHash: -249441822
   m_InstanceId: 0
-  m_ShadowShape2DComponent: {fileID: 0}
+  m_ShadowShape2DComponent: {fileID: 8487789736843744418}
   m_ShadowShape2DProvider:
-    rid: -2
-  m_ShadowCastingSource: 1
+    rid: 1151486114064498783
+  m_ShadowCastingSource: 2
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: 0.000000029802322, y: -0.1667597, z: 0}
-      m_Extent: {x: 0.5, y: 0.3332403, z: 0}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.3600006, y: 0.3600006, z: 0}
     m_EdgeProcessing: 1
-    m_TrimEdge: 0.05
+    m_TrimEdge: 0.14
     m_FlipX: 0
     m_FlipY: 0
-    m_InitialTrim: 0.05
+    m_InitialTrim: 0
   m_CastingOption: 1
-  m_PreviousTrimEdge: 0.05
+  m_PreviousTrimEdge: 0.14
   m_PreviousEdgeProcessing: 1
-  m_PreviousShadowCastingSource: 1
-  m_PreviousShadowShape2DSource: {fileID: 2466233998810829727}
+  m_PreviousShadowCastingSource: 2
+  m_PreviousShadowShape2DSource: {fileID: 8487789736843744418}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
---- !u!231 &2399248042461261531
-SpringJoint2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6211988839413683501}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_BreakAction: 3
-  m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: 0}
-  m_AutoConfigureDistance: 1
-  m_Distance: 0.005
-  m_DampingRatio: 0
-  m_Frequency: 1
+    - rid: 1151486114064498783
+      type: {class: ShadowShape2DProvider_SpriteRenderer, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
+      data: 
 --- !u!120 &6658359922887251664
 LineRenderer:
   serializedVersion: 2
