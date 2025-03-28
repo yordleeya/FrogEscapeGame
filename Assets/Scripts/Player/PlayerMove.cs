@@ -28,22 +28,27 @@ public class PlayerMove : MonoBehaviour
     {
         { JumpType.MouseRelease, 1f },
         { JumpType.EatFly, 2f },
-        {JumpType.Mushroom, 2f }
+        { JumpType.Mushroom, 2f }
     };
 
     Rigidbody2D rigid;
     float speed;
+    float airMoveSpeed;
     float jumpPower;
     Vector2 maxVelocity;
     float moveX;
     bool isMoving = false;
-    float stunTime;
 
     [SerializeField]
     RopeAction rope;
 
-    private bool isMovementStopped = false;
+    [SerializeField]
+    LayerMask groundLayer;
 
+    private bool isMovementStopped = false;
+    bool isJumping;
+
+    RaycastHit2D hit;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -52,18 +57,26 @@ public class PlayerMove : MonoBehaviour
             Debug.LogError("Rigidbody2D가 Player 오브젝트에 할당되지 않았습니다.");
         }
         speed = stats.Speed;
+        airMoveSpeed = stats.AirMoveSpeed;
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
-        stunTime = stats.StunTime;
 
         rope.Init(stats.TongueSpeed);
     }
 
+    private void Update()
+    {
+        if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
+        {
+            isMovementStopped = false;
+            isJumping = false;
+            transform.localEulerAngles = Vector3.zero;
+        }
+    }
     private void FixedUpdate()
     {
         if (isMovementStopped)
         {
-            rigid.linearVelocity = Vector2.zero; // 이동 멈추기
             return;
         }
 
@@ -73,6 +86,7 @@ public class PlayerMove : MonoBehaviour
             {
                 rigid.linearVelocityX += moveX;
             }
+            OnPlayerMove?.Invoke();
         }
         else
         {
@@ -82,16 +96,20 @@ public class PlayerMove : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (!context.canceled)
+        if (context.started || context.performed)
         {
-            if (!rope.gameObject.activeSelf)
-            {
-                Vector2 dir = context.ReadValue<Vector2>();
+            Vector2 dir = context.ReadValue<Vector2>();
 
+            if (!isJumping)
+            {
                 moveX = dir.x * speed;
-                isMoving = true;
-                OnPlayerMove?.Invoke();
             }
+            else
+            {
+                moveX = dir.x * airMoveSpeed;
+            }
+
+            isMoving = true;
         }
         else
         {
@@ -112,19 +130,26 @@ public class PlayerMove : MonoBehaviour
 
         if (context.started)
         {
-            rope.gameObject.SetActive(true);
-            rope.RopeShoot(direction); // 로프 발사
+            if (!rope.gameObject.activeSelf)
+            {
+                rope.gameObject.SetActive(true);
+                rope.RopeShoot(direction); // 로프 발사
+            }
         }
         else if (context.canceled && rope.gameObject.activeSelf && rope.IsAttached)
         {
+            if (Mathf.Abs(rigid.linearVelocity.x) > 1 || Mathf.Abs(rigid.linearVelocityY) > 1)
+            {
+                direction = rigid.linearVelocity.normalized;
+            }
+
+            rope.Released();
             Jump(direction, JumpType.MouseRelease); // 마우스 떼면 점프
-            rope.gameObject.SetActive(false);
         }
     }
     public void StopMovement()
     {
         isMovementStopped = true; // 이동 멈춤
-        rigid.linearVelocity = Vector2.zero; // Rigidbody2D의 속도도 0으로 설정
     }
 
     // 이동 재개
@@ -133,7 +158,7 @@ public class PlayerMove : MonoBehaviour
         isMovementStopped = false; // 이동 재개
     }
 
-    public void Jump(Vector2 direction, JumpType jumpType)
+    public void Jump(Vector2 direction, JumpType jumpType = JumpType.MouseRelease)
     {
         OnPlayerJump?.Invoke();
 
@@ -152,27 +177,13 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.transform.CompareTag("Land"))
+        if (collision.transform.CompareTag("Land") || collision.transform.CompareTag("Platform"))
         {
-            transform.localEulerAngles = Vector3.zero;
+            isMovementStopped = true;
+            isJumping = true;
         }
-        else if(collision.transform.CompareTag("Coin"))
-        {
-            StopMovement();
-            collision.gameObject.SetActive(false);
-
-            Invoke("ResumeMovement", stunTime);
-        }
-    }
-
-    public IEnumerator ResumePlayerMovementAfterDelay()
-    {
-        yield return new WaitForSeconds(1f); // 1초 대기
-        ResumeMovement(); // 이동 재개
     }
 
 }

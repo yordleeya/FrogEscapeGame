@@ -50,7 +50,11 @@ public class CoinManager : MonoBehaviour
 
     private void OnDisable()
     {
-        StopCoroutine(createCoinCoroutine);
+        if (createCoinCoroutine != null)
+        {
+            StopCoroutine(createCoinCoroutine);
+            createCoinCoroutine = null;
+        }
     }
 
     Coin coinScript;

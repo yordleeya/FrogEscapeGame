@@ -8,9 +8,9 @@ TagManager:
   - Coin
   - Object
   - Obstacle
+  - Tongue
   - Land
   - Platform
-  - Tongue
   layers:
   - Default
   - TransparentFX
