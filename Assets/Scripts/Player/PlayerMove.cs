@@ -20,6 +20,7 @@ public class PlayerMove : MonoBehaviour
     public enum JumpType
     {
         MouseRelease,
+        Attach,
         EatFly,
         Mushroom
     }
@@ -27,6 +28,7 @@ public class PlayerMove : MonoBehaviour
     private readonly Dictionary<JumpType, float> jumpMultipliers = new()
     {
         { JumpType.MouseRelease, 1f },
+        { JumpType.Attach, 0.5f },
         { JumpType.EatFly, 2f },
         { JumpType.Mushroom, 2f }
     };
@@ -164,6 +166,30 @@ public class PlayerMove : MonoBehaviour
 
         rigid.linearVelocityY = 0; // 기존 속도 초기화
 
+
+        if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
+        {
+            rigid.AddForce(direction * jumpPower * multiplier, ForceMode2D.Impulse);
+
+            Debug.Log(jumpType + "에 의해 " + direction + "방향으로 점프");
+        }
+        else
+        {
+            Debug.LogWarning($"JumpType {jumpType}의 가중치가 설정되지 않았습니다.");
+        }
+    }
+    /// <summary>
+    /// attach 상태일떄만 사용되는 함수, 그 외의 경우에는 사용 금지
+    /// </summary>
+    /// 
+    public void Jump()
+    {
+        OnPlayerJump?.Invoke();
+
+        rigid.linearVelocityY = 0; // 기존 속도 초기화
+
+        Vector2 direction = Vector2.up;
+        JumpType jumpType = JumpType.Attach;
 
         if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
         {
