@@ -9,7 +9,6 @@ public class PlayerMove : MonoBehaviour
 {
     public UnityEvent OnPlayerMove;
     public UnityEvent OnPlayerJump;
-    public float jumpForce = 10f;
 
 
     [Required("stat 에셋을 넣지 않으면 플레이어가 움직일 수 없습니다.\n" +

@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+癤퓎sing Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,44 +7,42 @@ using UnityEngine.InputSystem;
 public class RopeAction : MonoBehaviour
 {
     [FoldoutGroup("attach ray")]
-    [SerializeField]
-    LayerMask ropeAttachLayer;
+    [SerializeField] LayerMask ropeAttachLayer;
 
     [FoldoutGroup("attach ray")]
-    [SerializeField]
-    float distance;
+    [SerializeField] float distance;
 
     [FoldoutGroup("attach ray")]
-    [SerializeField]
-    Vector2 hitPosition;
+    [SerializeField] Vector2 hitPosition;
 
     public UnityEvent OnShot;
     public UnityEvent OnAttached;
     public UnityEvent OnDisableEvent;
 
+    [SerializeField] private Transform player;
+    private LineRenderer lineRenderer;
+
     [SerializeField] private float disableTime;
-    [SerializeField] private LineRenderer lineRenderer;
     private Coroutine disableCoroutine;
 
     private Rigidbody2D rigid;
-    private Transform player;
-    private SpringJoint2D playerSpringJoint;
+    private SpringJoint2D springJoint;
 
     private float tongueSpeed;
     private bool isAttached;
     public bool IsAttached => isAttached;
 
-    private void Awake()
+    private void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
-        playerSpringJoint = player.GetComponent<SpringJoint2D>();
+        lineRenderer = player.GetComponent<LineRenderer>();
+        springJoint = player.GetComponent<SpringJoint2D>();
     }
 
     private void OnEnable()
     {
         OnShot?.Invoke();
         disableCoroutine = StartCoroutine(DisableCoroutine());
-        lineRenderer.enabled = true;
     }
 
     private void OnDisable()
@@ -61,9 +59,14 @@ public class RopeAction : MonoBehaviour
 
     private void Update()
     {
-        if (lineRenderer.enabled)
+        if (isAttached)
         {
-            lineRenderer.SetPositions(new Vector3[] { player.position, transform.position });
+            springJoint.connectedAnchor = player.position;
+
+            if (lineRenderer.enabled)
+            {
+                lineRenderer.SetPositions(new Vector3[] { player.position, transform.position });
+            }
         }
     }
 
@@ -74,14 +77,14 @@ public class RopeAction : MonoBehaviour
 
     public void RopeShoot(Vector2 direction)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance, ropeAttachLayer);
+        RaycastHit2D hit = Physics2D.Raycast(player.position, direction, distance, ropeAttachLayer);
 
         if (hit.collider != null)
         {
-            switch(hit.collider.tag)
+            switch (hit.collider.tag)
             {
                 case "Land":
-                    gameObject.SetActive(false);
+                    Released();
                     break;
 
                 case "Platform":
@@ -90,7 +93,7 @@ public class RopeAction : MonoBehaviour
                     break;
 
                 default:
-                    Debug.LogWarning(hit.collider.tag + "의 경우는 고려되어있지 않습니다.");
+                    Debug.LogWarning($"Unhandled tag: {hit.collider.tag}");
                     break;
             }
         }
@@ -98,20 +101,23 @@ public class RopeAction : MonoBehaviour
 
     private void Attached()
     {
-        transform.position = hitPosition;
 
         if (disableCoroutine != null)
         {
             StopCoroutine(disableCoroutine);
+            disableCoroutine = null;
         }
 
-        float distance = Vector2.Distance(transform.position, player.position);
+        transform.position = hitPosition;
 
-        playerSpringJoint.connectedBody = rigid;
-        playerSpringJoint.distance = distance;
-        playerSpringJoint.anchor = player.InverseTransformPoint(transform.position);
-        playerSpringJoint.connectedAnchor = player.position;
-        playerSpringJoint.enabled = true;
+        springJoint.anchor = transform.position;
+
+        lineRenderer.enabled = true;
+
+        float attachDistance = Vector2.Distance(transform.position, player.position);
+
+        springJoint.distance = attachDistance;
+        springJoint.enabled = true;
 
         isAttached = true;
         OnAttached?.Invoke();
@@ -121,18 +127,20 @@ public class RopeAction : MonoBehaviour
     {
         if (!isAttached) return;
 
-        playerSpringJoint.enabled = false;
-        playerSpringJoint.connectedBody = null;
-
         ResetRope();
     }
 
     private void ResetRope()
     {
         isAttached = false;
-        transform.position = player.position;
         lineRenderer.enabled = false;
+        transform.position = player.position;
         gameObject.SetActive(false);
+
+        if (springJoint != null)
+        {
+            springJoint.enabled = false;
+        }
     }
 
     private IEnumerator DisableCoroutine()
@@ -140,5 +148,4 @@ public class RopeAction : MonoBehaviour
         yield return new WaitForSeconds(disableTime);
         gameObject.SetActive(false);
     }
-
 }
