@@ -15,6 +15,8 @@ public class RopeAction : MonoBehaviour
     [FoldoutGroup("attach ray")]
     [SerializeField] Vector2 hitPosition;
 
+    RaycastHit2D hit;
+
     public UnityEvent OnShot;
     public UnityEvent OnAttached;
     public UnityEvent OnDisableEvent;
@@ -61,6 +63,7 @@ public class RopeAction : MonoBehaviour
     {
         if (isAttached)
         {
+            springJoint.anchor = hit.transform.InverseTransformPoint(transform.position);
             springJoint.connectedAnchor = player.position;
 
             if (lineRenderer.enabled)
@@ -77,7 +80,7 @@ public class RopeAction : MonoBehaviour
 
     public void RopeShoot(Vector2 direction)
     {
-        RaycastHit2D hit = Physics2D.Raycast(player.position, direction, distance, ropeAttachLayer);
+        hit = Physics2D.Raycast(player.position, direction, distance, ropeAttachLayer);
 
         if (hit.collider != null)
         {
@@ -101,6 +104,7 @@ public class RopeAction : MonoBehaviour
 
     private void Attached()
     {
+        Rigidbody2D hitRigid = hit.transform.GetComponent<Rigidbody2D>();
 
         if (disableCoroutine != null)
         {
@@ -110,7 +114,7 @@ public class RopeAction : MonoBehaviour
 
         transform.position = hitPosition;
 
-        springJoint.anchor = transform.position;
+        springJoint.connectedBody = hitRigid;
 
         lineRenderer.enabled = true;
 
