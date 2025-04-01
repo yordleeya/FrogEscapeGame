@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -5,6 +6,18 @@ using UnityEngine.InputSystem;
 
 public class RopeAction : MonoBehaviour
 {
+    [FoldoutGroup("attach ray")]
+    [SerializeField]
+    LayerMask ropeAttachLayer;
+
+    [FoldoutGroup("attach ray")]
+    [SerializeField]
+    float distance;
+
+    [FoldoutGroup("attach ray")]
+    [SerializeField]
+    Vector2 hitPosition;
+
     public UnityEvent OnShot;
     public UnityEvent OnAttached;
     public UnityEvent OnDisableEvent;
@@ -62,46 +75,50 @@ public class RopeAction : MonoBehaviour
 
     public void RopeShoot(Vector2 direction)
     {
-        rigid.bodyType = RigidbodyType2D.Dynamic;
-        rigid.linearVelocity = direction * tongueSpeed;
-    }
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance, ropeAttachLayer);
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Platform"))
+        if (hit.collider != null)
         {
-            Attached();
-        }
-        else if (collision.CompareTag("Land"))
-        {
-            gameObject.SetActive(false);
+            switch(hit.collider.tag)
+            {
+                case "Land":
+                    gameObject.SetActive(false);
+                    break;
+
+                case "Platform":
+                    hitPosition = hit.point;
+                    Attached();
+                    break;
+
+                default:
+                    Debug.LogWarning(hit.collider.tag + "의 경우는 고려되어있지 않습니다.");
+                    break;
+            }
         }
     }
 
     private void Attached()
     {
         transform.parent = null;
-        rigid.bodyType = RigidbodyType2D.Kinematic;
-        rigid.linearVelocity = Vector2.zero;
+        transform.position = hitPosition;
 
         if (disableCoroutine != null)
         {
             StopCoroutine(disableCoroutine);
         }
 
-        AttachToPlayer();
+        AttachToPlatform();
         isAttached = true;
         OnAttached?.Invoke();
     }
 
-    private void AttachToPlayer()
+    private void AttachToPlatform()
     {
-        Vector2 attachPoint = transform.position;
-        float distance = Vector2.Distance(attachPoint, player.position) * 0.8f;
+        float distance = Vector2.Distance(transform.position, player.position) * 0.8f;
 
         playerSpringJoint.connectedBody = rigid;
         playerSpringJoint.distance = distance;
-        playerSpringJoint.connectedAnchor = attachPoint;
+        playerSpringJoint.anchor = transform.position;
         playerSpringJoint.enabled = true;
     }
 
@@ -119,8 +136,6 @@ public class RopeAction : MonoBehaviour
     {
         isAttached = false;
         transform.parent = player;
-        rigid.bodyType = RigidbodyType2D.Kinematic;
-        rigid.linearVelocity = Vector2.zero;
         transform.position = player.position;
         lineRenderer.enabled = false;
         gameObject.SetActive(false);
@@ -131,4 +146,5 @@ public class RopeAction : MonoBehaviour
         yield return new WaitForSeconds(disableTime);
         gameObject.SetActive(false);
     }
+
 }
