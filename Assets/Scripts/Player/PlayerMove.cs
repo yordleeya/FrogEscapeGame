@@ -45,7 +45,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     LayerMask groundLayer;
 
-    bool isJumping;
 
     RaycastHit2D hit;
     Vector2 direction = Vector2.right;
@@ -73,7 +72,6 @@ public class PlayerMove : MonoBehaviour
     {
         if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
         {
-            isJumping = false;
             transform.localEulerAngles = Vector3.zero;
         }
     }
@@ -99,7 +97,7 @@ public class PlayerMove : MonoBehaviour
         {
             direction = context.ReadValue<Vector2>();
 
-            moveX = dir.x * speed;
+            moveX = direction.x * speed;
 
             isMoving = true;
         }
@@ -180,14 +178,6 @@ public class PlayerMove : MonoBehaviour
         else
         {
             Debug.LogWarning($"JumpType {jumpType}의 가중치가 설정되지 않았습니다.");
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.transform.CompareTag("Land") || collision.transform.CompareTag("Platform"))
-        {
-            isJumping = true;
         }
     }
 
