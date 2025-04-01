@@ -37,7 +37,6 @@ public class RopeAction : MonoBehaviour
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
-        player = transform.parent;
         playerSpringJoint = player.GetComponent<SpringJoint2D>();
     }
 
@@ -99,7 +98,6 @@ public class RopeAction : MonoBehaviour
 
     private void Attached()
     {
-        transform.parent = null;
         transform.position = hitPosition;
 
         if (disableCoroutine != null)
@@ -107,19 +105,16 @@ public class RopeAction : MonoBehaviour
             StopCoroutine(disableCoroutine);
         }
 
-        AttachToPlatform();
-        isAttached = true;
-        OnAttached?.Invoke();
-    }
-
-    private void AttachToPlatform()
-    {
-        float distance = Vector2.Distance(transform.position, player.position) * 0.8f;
+        float distance = Vector2.Distance(transform.position, player.position);
 
         playerSpringJoint.connectedBody = rigid;
         playerSpringJoint.distance = distance;
-        playerSpringJoint.anchor = transform.position;
+        playerSpringJoint.anchor = player.InverseTransformPoint(transform.position);
+        playerSpringJoint.connectedAnchor = player.position;
         playerSpringJoint.enabled = true;
+
+        isAttached = true;
+        OnAttached?.Invoke();
     }
 
     public void Released()
@@ -135,7 +130,6 @@ public class RopeAction : MonoBehaviour
     private void ResetRope()
     {
         isAttached = false;
-        transform.parent = player;
         transform.position = player.position;
         lineRenderer.enabled = false;
         gameObject.SetActive(false);
