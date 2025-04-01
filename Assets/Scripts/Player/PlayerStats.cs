@@ -14,10 +14,6 @@ public class PlayerStats : ScriptableObject
 
     [FoldoutGroup("MoveMent")]
     [SerializeField]
-    float airMoveSpeed;
-
-    [FoldoutGroup("MoveMent")]
-    [SerializeField]
     float jumpPower;
 
     [FoldoutGroup("MoveMent")]
@@ -35,8 +31,6 @@ public class PlayerStats : ScriptableObject
 
     public int Stamina {  get => maxStamina; }
     public float Speed { get => speed;}
-    public float AirMoveSpeed { get => airMoveSpeed; }
-
     public float JumpPower { get => jumpPower; }
     public float PowerGainSpeed { get => powerGainSpeed;}
     public Vector2 MaxVelocity { get => maxVelocity; }

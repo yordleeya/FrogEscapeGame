@@ -13,7 +13,7 @@ public class RopeAction : MonoBehaviour
     [SerializeField] float distance;
 
     [FoldoutGroup("attach ray")]
-    [SerializeField] Vector2 hitPosition;
+    [SerializeField] Vector3 hitPosition;
 
     RaycastHit2D hit;
 
@@ -23,6 +23,8 @@ public class RopeAction : MonoBehaviour
 
     [SerializeField] private Transform player;
     private LineRenderer lineRenderer;
+
+    [SerializeField] Transform tonguePosition;
 
     [SerializeField] private float disableTime;
     private Coroutine disableCoroutine;
@@ -39,6 +41,8 @@ public class RopeAction : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         lineRenderer = player.GetComponent<LineRenderer>();
         springJoint = player.GetComponent<SpringJoint2D>();
+
+        gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -63,15 +67,16 @@ public class RopeAction : MonoBehaviour
     {
         if (isAttached)
         {
-            springJoint.anchor = hit.transform.InverseTransformPoint(transform.position);
-            springJoint.connectedAnchor = player.position;
+            transform.position = springJoint.connectedBody.position;
+
 
             if (lineRenderer.enabled)
             {
-                lineRenderer.SetPositions(new Vector3[] { player.position, transform.position });
+                lineRenderer.SetPositions(new Vector3[] { tonguePosition.position, transform.position });
             }
         }
     }
+
 
     public void Init(float _tongueSpeed)
     {
@@ -112,7 +117,7 @@ public class RopeAction : MonoBehaviour
             disableCoroutine = null;
         }
 
-        transform.position = hitPosition;
+        springJoint.enabled = true;
 
         springJoint.connectedBody = hitRigid;
 
@@ -121,7 +126,6 @@ public class RopeAction : MonoBehaviour
         float attachDistance = Vector2.Distance(transform.position, player.position);
 
         springJoint.distance = attachDistance;
-        springJoint.enabled = true;
 
         isAttached = true;
         OnAttached?.Invoke();

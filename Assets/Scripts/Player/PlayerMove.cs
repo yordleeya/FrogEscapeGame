@@ -34,7 +34,6 @@ public class PlayerMove : MonoBehaviour
 
     Rigidbody2D rigid;
     float speed;
-    float airMoveSpeed;
     float jumpPower;
     Vector2 maxVelocity;
     float moveX;
@@ -46,7 +45,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     LayerMask groundLayer;
 
-    private bool isMovementStopped = false;
     bool isJumping;
 
     RaycastHit2D hit;
@@ -58,7 +56,6 @@ public class PlayerMove : MonoBehaviour
             Debug.LogError("Rigidbody2D가 Player 오브젝트에 할당되지 않았습니다.");
         }
         speed = stats.Speed;
-        airMoveSpeed = stats.AirMoveSpeed;
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
 
@@ -69,18 +66,12 @@ public class PlayerMove : MonoBehaviour
     {
         if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
         {
-            isMovementStopped = false;
             isJumping = false;
             transform.localEulerAngles = Vector3.zero;
         }
     }
     private void FixedUpdate()
     {
-        if (isMovementStopped)
-        {
-            return;
-        }
-
         if (isMoving)
         {
             if (Mathf.Abs(rigid.linearVelocityX) < Mathf.Abs(maxVelocity.x))
@@ -97,18 +88,11 @@ public class PlayerMove : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (context.started || context.performed)
+        if ((context.started || context.performed) && rope.IsAttached)
         {
             Vector2 dir = context.ReadValue<Vector2>();
 
-            if (!isJumping)
-            {
-                moveX = dir.x * speed;
-            }
-            else
-            {
-                moveX = dir.x * airMoveSpeed;
-            }
+            moveX = dir.x * speed;
 
             isMoving = true;
         }
@@ -147,16 +131,6 @@ public class PlayerMove : MonoBehaviour
             rope.Released();
             Jump(direction, JumpType.MouseRelease); // 마우스 떼면 점프
         }
-    }
-    public void StopMovement()
-    {
-        isMovementStopped = true; // 이동 멈춤
-    }
-
-    // 이동 재개
-    public void ResumeMovement()
-    {
-        isMovementStopped = false; // 이동 재개
     }
 
     public void Jump(Vector2 direction, JumpType jumpType = JumpType.MouseRelease)
@@ -206,7 +180,6 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.transform.CompareTag("Land") || collision.transform.CompareTag("Platform"))
         {
-            isMovementStopped = true;
             isJumping = true;
         }
     }
