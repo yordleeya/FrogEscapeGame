@@ -28,7 +28,7 @@ public class PlayerMove : MonoBehaviour
     {
         { JumpType.MouseRelease, 1f },
         { JumpType.Attach, 0.5f },
-        { JumpType.EatFly, 2f },
+        { JumpType.EatFly, 1.5f },
         { JumpType.Mushroom, 2f }
     };
 
@@ -48,8 +48,15 @@ public class PlayerMove : MonoBehaviour
     bool isJumping;
 
     RaycastHit2D hit;
+    Vector2 direction = Vector2.right;
+    SpriteRenderer spriteRenderer;
+
+    public Vector2 Direction { get => direction;}
+
     private void Awake()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         rigid = GetComponent<Rigidbody2D>();
         if (rigid == null)
         {
@@ -90,7 +97,7 @@ public class PlayerMove : MonoBehaviour
     {
         if ((context.started || context.performed) && rope.IsAttached)
         {
-            Vector2 dir = context.ReadValue<Vector2>();
+            direction = context.ReadValue<Vector2>();
 
             moveX = dir.x * speed;
 
