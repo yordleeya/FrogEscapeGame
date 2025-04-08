@@ -1,34 +1,24 @@
 ﻿using Sirenix.OdinInspector;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 
 public class RopeAction : MonoBehaviour
 {
-    [FoldoutGroup("attach ray")]
-    [SerializeField] LayerMask ropeAttachLayer;
+    [FoldoutGroup("Attach Ray"), SerializeField] private LayerMask ropeAttachLayer;
+    [FoldoutGroup("Attach Ray"), SerializeField] private float raycastDistance;
+    [FoldoutGroup("Attach Ray"), SerializeField] private Vector3 hitPosition;
 
-    [FoldoutGroup("attach ray")]
-    [SerializeField] float distance;
+    [FoldoutGroup("Rope"), SerializeField] private float maxTargetDistance;
+    [FoldoutGroup("Rope"), SerializeField] private float minTargetDistance;
 
-    [FoldoutGroup("attach ray")]
-    [SerializeField] Vector3 hitPosition;
-
-    RaycastHit2D hit;
+    [FoldoutGroup("Tongue"), SerializeField] private Transform tongue;
+    [FoldoutGroup("Tongue"), SerializeField] private Transform tongueOrigin;
 
     public UnityEvent OnShot;
     public UnityEvent OnAttached;
     public UnityEvent OnDisableEvent;
 
-    [SerializeField] private Transform player;
     private LineRenderer lineRenderer;
-
-    [SerializeField] Transform tonguePosition;
-
-    [SerializeField] private float disableTime;
-    private Coroutine disableCoroutine;
-
     private Rigidbody2D rigid;
     private SpringJoint2D springJoint;
 
@@ -36,45 +26,34 @@ public class RopeAction : MonoBehaviour
     private bool isAttached;
     public bool IsAttached => isAttached;
 
+    private float attachDistance;
+    private RaycastHit2D hit;
+
+    private bool isFlying;
+
     private void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
-        lineRenderer = player.GetComponent<LineRenderer>();
-        springJoint = player.GetComponent<SpringJoint2D>();
-
-        gameObject.SetActive(false);
-    }
-
-    private void OnEnable()
-    {
-        OnShot?.Invoke();
-        disableCoroutine = StartCoroutine(DisableCoroutine());
-    }
-
-    private void OnDisable()
-    {
-        if (disableCoroutine != null)
-        {
-            StopCoroutine(disableCoroutine);
-            disableCoroutine = null;
-        }
-
-        ResetRope();
-        OnDisableEvent?.Invoke();
+        lineRenderer = GetComponent<LineRenderer>();
+        springJoint = GetComponent<SpringJoint2D>();
+        springJoint.enabled = false;
     }
 
     private void Update()
     {
-        if (isAttached)
+        if (isFlying)
         {
-            transform.position = springJoint.connectedBody.position;
-
-
-            if (lineRenderer.enabled)
-            {
-                lineRenderer.SetPositions(new Vector3[] { tonguePosition.position, transform.position });
-            }
+            AnimateTongueFlight();
+            UpdateLineRenderer();
+            return;
         }
+
+        if (!isAttached) return;
+
+        UpdateTonguePosition();
+        UpdatePlayerRotation();
+        UpdateLineRenderer();
+        ClampSpringDistance();
     }
 
 
@@ -85,47 +64,59 @@ public class RopeAction : MonoBehaviour
 
     public void RopeShoot(Vector2 direction)
     {
-        hit = Physics2D.Raycast(player.position, direction, distance, ropeAttachLayer);
+        OnShot?.Invoke();
 
-        if (hit.collider != null)
+        hit = Physics2D.Raycast(tongueOrigin.position, direction, raycastDistance, ropeAttachLayer);
+
+        if (hit.collider == null) return;
+
+        switch (hit.collider.tag)
         {
-            switch (hit.collider.tag)
+            case "Land":
+                Released();
+                break;
+
+            case "Platform":
+                hitPosition = hit.point;
+                tongue.position = tongueOrigin.position;
+                isFlying = true; // ⬅ 혀 날아가는 중으로 상태 설정
+                break;
+
+            default:
+                Debug.LogWarning($"Unhandled tag: {hit.collider.tag}");
+                break;
+        }
+    }
+
+    private void AnimateTongueFlight()
+    {
+        tongue.position = Vector3.MoveTowards(tongue.position, hitPosition, tongueSpeed * Time.deltaTime);
+
+        if (Vector3.Distance(tongue.position, hitPosition) < 0.05f)
+        {
+            isFlying = false;
+            Rigidbody2D hitRigid;
+            if(hit.transform.TryGetComponent<Rigidbody2D>(out hitRigid))
             {
-                case "Land":
-                    Released();
-                    break;
-
-                case "Platform":
-                    hitPosition = hit.point;
-                    Attached();
-                    break;
-
-                default:
-                    Debug.LogWarning($"Unhandled tag: {hit.collider.tag}");
-                    break;
+                AttachToTarget(hitRigid);
             }
         }
     }
 
-    private void Attached()
+
+    private void AttachToTarget(Rigidbody2D targetBody)
     {
-        Rigidbody2D hitRigid = hit.transform.GetComponent<Rigidbody2D>();
+        if (targetBody == null) return;
 
-        if (disableCoroutine != null)
-        {
-            StopCoroutine(disableCoroutine);
-            disableCoroutine = null;
-        }
-
+        springJoint.connectedBody = targetBody;
+        springJoint.autoConfigureDistance = false;
         springJoint.enabled = true;
 
-        springJoint.connectedBody = hitRigid;
+        attachDistance = Vector2.Distance(tongueOrigin.position, hitPosition);
+        springJoint.distance = Mathf.Max(attachDistance, minTargetDistance);
 
+        tongue.position = hitPosition;
         lineRenderer.enabled = true;
-
-        float attachDistance = Vector2.Distance(transform.position, player.position);
-
-        springJoint.distance = attachDistance;
 
         isAttached = true;
         OnAttached?.Invoke();
@@ -134,7 +125,6 @@ public class RopeAction : MonoBehaviour
     public void Released()
     {
         if (!isAttached) return;
-
         ResetRope();
     }
 
@@ -142,18 +132,61 @@ public class RopeAction : MonoBehaviour
     {
         isAttached = false;
         lineRenderer.enabled = false;
-        transform.position = player.position;
-        gameObject.SetActive(false);
+        tongue.position = transform.position;
 
         if (springJoint != null)
         {
             springJoint.enabled = false;
         }
+
+        OnDisableEvent?.Invoke();
     }
 
-    private IEnumerator DisableCoroutine()
+    private void UpdateTonguePosition()
     {
-        yield return new WaitForSeconds(disableTime);
-        gameObject.SetActive(false);
+        if (springJoint.connectedBody != null)
+        {
+            tongue.position = springJoint.connectedBody.position;
+        }
     }
+
+    private void UpdatePlayerRotation()
+    {
+        Vector2 velocity = rigid.linearVelocity;
+        if (velocity.sqrMagnitude > Mathf.Epsilon)
+        {
+            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+    }
+
+    private void UpdateLineRenderer()
+    {
+        if (!lineRenderer.enabled) return;
+        lineRenderer.SetPositions(new Vector3[] { tongue.position, transform.position });
+    }
+
+    private void ClampSpringDistance()
+    {
+        if (springJoint.distance > maxTargetDistance)
+        {
+            springJoint.distance = maxTargetDistance;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (tongueOrigin == null) return;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(
+            tongueOrigin.position,
+            tongueOrigin.position + (transform.right * raycastDistance)
+        );
+
+        // Optional: 원형 반경으로도 표시하고 싶다면 아래 추가
+        Gizmos.color = new Color(0f, 1f, 1f, 0.1f);
+        Gizmos.DrawWireSphere(tongueOrigin.position, raycastDistance);
+    }
+
 }

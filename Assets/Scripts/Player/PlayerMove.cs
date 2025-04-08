@@ -112,21 +112,17 @@ public class PlayerMove : MonoBehaviour
         Vector2 mousePosition = Mouse.current.position.ReadValue();
 
         Vector3 worldMousePos3D = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
-        Vector2 worldMousePos = new Vector2(worldMousePos3D.x, worldMousePos3D.y);
+        Vector2 worldMousePos = (Vector2)worldMousePos3D;
 
         Vector2 playerPos = transform.position;
 
         Vector2 direction = (worldMousePos - playerPos).normalized;
 
-        if (context.started)
+        if (context.started)// 로프 발사
         {
-            if (!rope.gameObject.activeSelf)
-            {
-                rope.gameObject.SetActive(true);
-                rope.RopeShoot(direction); // 로프 발사
-            }
+            rope.RopeShoot(direction); 
         }
-        else if (context.canceled && rope.gameObject.activeSelf && rope.IsAttached)
+        else if (context.canceled && rope.IsAttached) // 마우스 떼면 점프
         {
             if (Mathf.Abs(rigid.linearVelocity.x) > 1 || Mathf.Abs(rigid.linearVelocityY) > 1)
             {
@@ -134,7 +130,7 @@ public class PlayerMove : MonoBehaviour
             }
 
             rope.Released();
-            Jump(direction, JumpType.MouseRelease); // 마우스 떼면 점프
+            Jump(direction, JumpType.MouseRelease);
         }
     }
 
@@ -147,7 +143,7 @@ public class PlayerMove : MonoBehaviour
 
         if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
         {
-            rigid.AddForce(direction * jumpPower * multiplier, ForceMode2D.Impulse);
+            rigid.AddForce(jumpPower * multiplier * direction, ForceMode2D.Impulse);
 
             Debug.Log(jumpType + "에 의해 " + direction + "방향으로 점프");
         }
@@ -162,16 +158,19 @@ public class PlayerMove : MonoBehaviour
     /// 
     public void Jump()
     {
-        OnPlayerJump?.Invoke();
+        if(rigid.linearVelocityY <= 0)
+        {
+            return;
+        }
 
-        rigid.linearVelocityY = 0; // 기존 속도 초기화
+        OnPlayerJump?.Invoke();
 
         Vector2 direction = Vector2.up;
         JumpType jumpType = JumpType.Attach;
 
         if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
         {
-            rigid.AddForce(direction * jumpPower * multiplier, ForceMode2D.Impulse);
+            rigid.AddForce(jumpPower * multiplier * direction, ForceMode2D.Impulse);
 
             Debug.Log(jumpType + "에 의해 " + direction + "방향으로 점프");
         }
