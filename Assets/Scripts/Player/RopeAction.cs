@@ -83,6 +83,7 @@ public class RopeAction : MonoBehaviour
                 isFlying = true; // ⬅ 혀 날아가는 중으로 상태 설정
                 break;
 
+
             default:
                 Debug.LogWarning($"Unhandled tag: {hit.collider.tag}");
                 break;
