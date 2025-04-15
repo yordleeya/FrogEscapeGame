@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Player Stat
   m_EditorClassIdentifier: 
   maxStamina: 100
-  speed: 1
+  speed: 4
   jumpPower: 5
   powerGainSpeed: 1
   maxVelocity: {x: 5, y: 15}

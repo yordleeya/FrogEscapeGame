@@ -81,8 +81,11 @@ public class PlayerMove : MonoBehaviour
         {
             if (Mathf.Abs(rigid.linearVelocityX) < Mathf.Abs(maxVelocity.x))
             {
-                rigid.linearVelocityX += moveX;
+                rigid.linearVelocityX = moveX;
+
             }
+
+
             OnPlayerMove?.Invoke();
         }
         else
@@ -93,11 +96,18 @@ public class PlayerMove : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if ((context.started || context.performed) && rope.IsAttached)
+        if ((context.started || context.performed))
         {
             direction = context.ReadValue<Vector2>();
 
-            moveX = direction.x * speed;
+            if (rope.IsAttached)
+            {
+                moveX = direction.x * speed;
+            }
+            else
+            {
+                moveX = direction.x * speed * 0.5f;
+            }
 
             isMoving = true;
         }

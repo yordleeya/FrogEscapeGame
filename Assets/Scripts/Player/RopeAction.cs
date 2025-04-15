@@ -45,6 +45,7 @@ public class RopeAction : MonoBehaviour
         {
             AnimateTongueFlight();
             UpdateLineRenderer();
+            UpdatePlayerLookAtTongue();
             return;
         }
 
@@ -113,7 +114,7 @@ public class RopeAction : MonoBehaviour
         springJoint.enabled = true;
 
         attachDistance = Vector2.Distance(tongueOrigin.position, hitPosition);
-        springJoint.distance = Mathf.Max(attachDistance, minTargetDistance);
+        springJoint.distance = Mathf.Max(attachDistance, minTargetDistance) * 0.8f;
 
         tongue.position = hitPosition;
         lineRenderer.enabled = true;
@@ -152,10 +153,36 @@ public class RopeAction : MonoBehaviour
 
     private void UpdatePlayerRotation()
     {
-        Vector2 velocity = rigid.linearVelocity;
-        if (velocity.sqrMagnitude > Mathf.Epsilon)
+        if (isAttached)
         {
-            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+            // 혀가 부착된 경우, 플레이어가 혀를 바라보도록 회전
+            Vector2 direction = tongue.position - transform.position;
+            if (direction.sqrMagnitude > Mathf.Epsilon)
+            {
+                // 혀 방향으로 플레이어를 회전
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            }
+        }
+        else
+        {
+            // 혀가 부착되지 않은 경우, 이동 방향으로 회전
+            Vector2 velocity = rigid.linearVelocity;
+            if (velocity.sqrMagnitude > Mathf.Epsilon)
+            {
+                float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            }
+        }
+    }
+
+    private void UpdatePlayerLookAtTongue()
+    {
+        Vector2 direction = tongue.position - transform.position;
+        if (direction.sqrMagnitude > Mathf.Epsilon)
+        {
+            // 혀 방향으로 플레이어를 회전
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
