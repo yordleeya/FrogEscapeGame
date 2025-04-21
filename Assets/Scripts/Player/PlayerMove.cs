@@ -134,6 +134,13 @@ public class PlayerMove : MonoBehaviour
         }
         else if (context.canceled && rope.IsAttached) // 마우스 떼면 점프
         {
+            // Handle에 부착된 경우는 점프하지 않음
+            if (rope.IsAttachedToHandle)
+            {
+                rope.Released();
+                return;
+            }
+
             if (Mathf.Abs(rigid.linearVelocity.x) > 1 || Mathf.Abs(rigid.linearVelocityY) > 1)
             {
                 direction = rigid.linearVelocity.normalized;

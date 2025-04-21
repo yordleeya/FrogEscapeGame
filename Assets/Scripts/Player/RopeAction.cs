@@ -37,6 +37,9 @@ public class RopeAction : MonoBehaviour
     private float tongueSpeed;
     private bool isAttached = false;
     public bool IsAttached => isAttached;
+    
+    // Handle 부착 여부를 확인하는 프로퍼티 추가
+    public bool IsAttachedToHandle => isAttached && hitInfo.collider != null && hitInfo.collider.GetComponent<HandleTrigger>() != null;
 
     private bool isFlying = false;
     private RaycastHit2D hitInfo;
@@ -234,8 +237,14 @@ public class RopeAction : MonoBehaviour
         if (Vector2.Distance(newPos, targetPos) < 0.05f)
         {
             isFlying = false;
-            tongueRigidbody.MovePosition(targetPos);
+            // 👇 추가된 코드: 붙을 때 법선 방향으로 살짝 밀어 넣기
+            Vector2 offset = -hitInfo.normal * 0.01f; // 법선 방향으로 0.05만큼 안쪽으로
+            Vector2 adjustedPos = hitInfo.point + offset;
+
+            tongueRigidbody.MovePosition(adjustedPos); // 수정된 위치로 혀를 이동
+
             tongueRigidbody.linearVelocity = Vector2.zero;
+
 
             if (hitInfo.collider == null || !hitInfo.collider.CompareTag("Platform"))
             {
@@ -276,13 +285,27 @@ public class RopeAction : MonoBehaviour
         if (hitInfo.collider == null) return;
         Debug.Log($"[RopeAction] Attaching to Static Point: {hitInfo.collider.name}");
 
-        tongueRigidbody.bodyType = RigidbodyType2D.Static;
+        // Handle에 부착될 때는 Kinematic으로 설정
+        if (hitInfo.collider.GetComponent<HandleTrigger>())
+        {
+            tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
+        }
+        else
+        {
+            tongueRigidbody.bodyType = RigidbodyType2D.Static;
+        }
+        
         tongueRigidbody.simulated = true;
 
         ConnectSpringJoint();
 
         isAttached = true;
-        OnAttached?.Invoke();
+        
+        // Handle에 부착될 때는 점프하지 않도록 수정
+        if (!hitInfo.collider.GetComponent<HandleTrigger>())
+        {
+            OnAttached?.Invoke();
+        }
     }
 
     private void ConnectSpringJoint()
@@ -331,6 +354,7 @@ public class RopeAction : MonoBehaviour
 
     private void ResetRopeState()
     {
+        Debug.LogWarning("ResetRopeState() 호출됨! 혀가 해제됨!");
         if (!enabled) return;
 
         Debug.Log("[RopeAction] Resetting rope state...");
@@ -353,10 +377,14 @@ public class RopeAction : MonoBehaviour
 
         if (tongueRigidbody != null)
         {
-            tongueRigidbody.simulated = false;
+            // 먼저 bodyType 되돌리기 (Static → Dynamic 등)
+            tongueRigidbody.bodyType = initialTongueBodyType;
+            // 그 다음 속도 초기화
             tongueRigidbody.linearVelocity = Vector2.zero;
             tongueRigidbody.angularVelocity = 0f;
-            tongueRigidbody.bodyType = initialTongueBodyType;
+            //마지막에 비활성화
+            tongueRigidbody.simulated = false;
+
             ResetTongueTransform();
         }
 
