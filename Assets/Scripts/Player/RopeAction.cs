@@ -124,17 +124,16 @@ public class RopeAction : MonoBehaviour
 
     public void OnInput(InputAction.CallbackContext context)
     {
-        if (isAttached) return;
         if (context.started)
         {
+            tongueShotDistance = 0;
             circleTransform.gameObject.SetActive(true);
             isHolding = true;
         }
         else if (context.canceled || isAttached)
         {
-            circleTransform.gameObject.SetActive(false);
-            tongueShotDistance = 0;
             isHolding = false;
+            circleTransform.gameObject.SetActive(false);
         }
     }
 
@@ -174,53 +173,58 @@ public class RopeAction : MonoBehaviour
         }
     }
 
-    public void RopeShoot(Vector2 direction)
+    Vector2 mouseDirection;
+    public void RopeShoot(Vector2 direction , InputAction.CallbackContext context)
     {
-        if (!enabled || isAttached || isFlying) return;
+        if ( isAttached || isFlying) return;
 
-
-        hitInfo = Physics2D.Raycast(tongueOrigin.position, direction.normalized, tongueShotDistance, ropeAttachLayer);
-
-        if (hitInfo.collider == null)
+        if (context.canceled)
         {
-            Debug.Log("[RopeAction] Rope missed.");
-            return;
-        }
+            mouseDirection = direction;
 
-        OnShot?.Invoke();
+            hitInfo = Physics2D.Raycast(tongueOrigin.position, mouseDirection, tongueShotDistance, ropeAttachLayer);
 
-        Vector3 hitPoint = hitInfo.point;
-        Collider2D hitCollider = hitInfo.collider;
-        currentSlippingPlatform = null;
-        bool attachSuccess = false;
+            if (hitInfo.collider == null)
+            {
+                Debug.Log("[RopeAction] Rope missed.");
+                return;
+            }
 
-        if (hitCollider.CompareTag("Platform"))
-        {
-            currentSlippingPlatform = hitCollider.GetComponent<SlippingPlatform>();
-            attachSuccess = true;
-            Debug.Log($"[RopeAction] Hit Platform: '{hitCollider.name}'. Slipping: {currentSlippingPlatform != null}");
-        }
-        else if (hitCollider.CompareTag("Land"))
-        {
-            Debug.Log($"[RopeAction] Hit Land ('{hitCollider.name}'). Cannot attach.");
-            return;
-        }
-        else
-        {
-            Debug.LogWarning($"[RopeAction] Hit object with unhandled tag: Tag='{hitCollider.tag}', Name='{hitCollider.name}'");
-            return;
-        }
+            OnShot?.Invoke();
 
-        if (attachSuccess)
-        {
-            ResetTongueTransform();
-            tongueRigidbody.simulated = true;
-            tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
-            tongueRigidbody.linearVelocity = Vector2.zero;
-            tongueRigidbody.angularVelocity = 0f;
+            Vector3 hitPoint = hitInfo.point;
+            Collider2D hitCollider = hitInfo.collider;
+            currentSlippingPlatform = null;
+            bool attachSuccess = false;
 
-            isFlying = true;
-            lineRenderer.enabled = true;
+            if (hitCollider.CompareTag("Platform"))
+            {
+                hitCollider.TryGetComponent<SlippingPlatform>(out currentSlippingPlatform);
+                attachSuccess = true;
+                Debug.Log($"[RopeAction] Hit Platform: '{hitCollider.name}'. Slipping: {currentSlippingPlatform != null}");
+            }
+            else if (hitCollider.CompareTag("Land"))
+            {
+                Debug.Log($"[RopeAction] Hit Land ('{hitCollider.name}'). Cannot attach.");
+                return;
+            }
+            else
+            {
+                Debug.LogWarning($"[RopeAction] Hit object with unhandled tag: Tag='{hitCollider.tag}', Name='{hitCollider.name}'");
+                return;
+            }
+
+            if (attachSuccess)
+            {
+                tongue.position = hitPoint;
+                tongueRigidbody.simulated = true;
+                tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
+                tongueRigidbody.linearVelocity = Vector2.zero;
+                tongueRigidbody.angularVelocity = 0f;
+
+                isFlying = true;
+                lineRenderer.enabled = true;
+            }
         }
     }
 
@@ -362,7 +366,6 @@ public class RopeAction : MonoBehaviour
         isSlipping = false;
         currentSlippingPlatform = null;
         currentSlipDistance = 0f;
-        hitInfo = default;
 
         if (lineRenderer != null) lineRenderer.enabled = false;
 
@@ -396,7 +399,6 @@ public class RopeAction : MonoBehaviour
         if (tongue != null && tongueOrigin != null)
         {
             tongue.position = tongueOrigin.position;
-            tongue.rotation = tongueOrigin.rotation;
         }
     }
 
@@ -412,20 +414,14 @@ public class RopeAction : MonoBehaviour
     {
         if (tongueOrigin != null)
         {
-            Gizmos.color = Color.cyan;
             Vector3 gizmoDirection = transform.right;
-            Gizmos.DrawLine(tongueOrigin.position, tongueOrigin.position + gizmoDirection * tongueShotDistance);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(tongueOrigin.position, mouseDirection * tongueShotDistance);
             Gizmos.color = new Color(0f, 1f, 1f, 0.1f);
             Gizmos.DrawWireSphere(tongueOrigin.position, tongueShotDistance);
         }
 
         if (!Application.isPlaying) return;
-
-        if (tongue != null)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(tongue.position, 0.3f);
-        }
 
         if (isSlipping)
         {

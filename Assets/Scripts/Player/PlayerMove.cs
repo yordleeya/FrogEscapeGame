@@ -45,6 +45,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     LayerMask groundLayer;
 
+    [SerializeField]
+    Transform rangeUI;
 
     RaycastHit2D hit;
     Vector2 direction = Vector2.right;
@@ -117,8 +119,9 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+
     public void OnRope(InputAction.CallbackContext context)
-    {
+{
         Vector2 mousePosition = Mouse.current.position.ReadValue();
 
         Vector3 worldMousePos3D = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
@@ -126,28 +129,31 @@ public class PlayerMove : MonoBehaviour
 
         Vector2 playerPos = transform.position;
 
-        Vector2 direction = (worldMousePos - playerPos).normalized;
+        Vector2 mouseDirection = (worldMousePos - playerPos).normalized;
 
-        if (context.started)// 로프 발사
+        if (!rope.IsAttached)
         {
-            rope.RopeShoot(direction); 
+            rope.RopeShoot(mouseDirection, context);
         }
-        else if (context.canceled && rope.IsAttached) // 마우스 떼면 점프
+        else
         {
-            // Handle에 부착된 경우는 점프하지 않음
-            if (rope.IsAttachedToHandle)
+            if (context.started)
             {
+                // Handle에 부착된 경우는 점프하지 않음
+                if (rope.IsAttachedToHandle)
+                {
+                    rope.Released();
+                    return;
+                }
+
+                if (Mathf.Abs(rigid.linearVelocity.x) > 1 || Mathf.Abs(rigid.linearVelocityY) > 1)
+                {
+                    direction = rigid.linearVelocity.normalized;
+                }
+
                 rope.Released();
-                return;
+                Jump(mouseDirection, JumpType.MouseRelease);
             }
-
-            if (Mathf.Abs(rigid.linearVelocity.x) > 1 || Mathf.Abs(rigid.linearVelocityY) > 1)
-            {
-                direction = rigid.linearVelocity.normalized;
-            }
-
-            rope.Released();
-            Jump(direction, JumpType.MouseRelease);
         }
     }
 
@@ -196,6 +202,7 @@ public class PlayerMove : MonoBehaviour
             Debug.LogWarning($"JumpType {jumpType}의 가중치가 설정되지 않았습니다.");
         }
     }
+
 
 }
 
