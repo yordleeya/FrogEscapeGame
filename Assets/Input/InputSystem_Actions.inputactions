@@ -31,15 +31,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "RopeRange",
-                    "type": "Button",
-                    "id": "dccc24d6-4907-46c6-8b85-dfbd85a1e4fa",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -194,17 +185,6 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Rope",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "68749b91-2314-4451-ba2f-d0ce0ba6ef2b",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RopeRange",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
