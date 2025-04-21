@@ -50,9 +50,6 @@ public class RopeAction : MonoBehaviour
     private float currentSlipDistance = 0f;
     private Vector3 initialAttachPosition;
 
-
-    [SerializeField]
-    PlayerStats stat;
     float expandSpeed;
 
     [SerializeField]
