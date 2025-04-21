@@ -124,6 +124,7 @@ public class RopeAction : MonoBehaviour
 
     public void OnInput(InputAction.CallbackContext context)
     {
+        if (isAttached) return;
         if (context.started)
         {
             circleTransform.gameObject.SetActive(true);
