@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PlayerStats : ScriptableObject
 {
-    [FoldoutGroup("Default")]
-    [SerializeField]
-    int maxStamina;
 
     [FoldoutGroup("MoveMent")]
     [SerializeField]
@@ -26,13 +23,22 @@ public class PlayerStats : ScriptableObject
 
     [FoldoutGroup("Tongue")]
     [SerializeField]
+    float tongueRangeExpandSpeed;
+
+    [FoldoutGroup("Tongue")]
+    [SerializeField]
+    float maxTongueShotDistance;
+
+    [FoldoutGroup("Tongue")]
+    [SerializeField]
     float tongueSpeed;
 
 
-    public int Stamina {  get => maxStamina; }
     public float Speed { get => speed;}
     public float JumpPower { get => jumpPower; }
     public float PowerGainSpeed { get => powerGainSpeed;}
     public Vector2 MaxVelocity { get => maxVelocity; }
     public float TongueSpeed { get => tongueSpeed;}
+    public float TongueRangeExpandSpeed { get => tongueRangeExpandSpeed; }
+    public float MaxTongueShotDistance { get => maxTongueShotDistance;}
 }
