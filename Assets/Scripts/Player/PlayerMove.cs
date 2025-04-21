@@ -65,7 +65,7 @@ public class PlayerMove : MonoBehaviour
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
 
-        rope.Init(stats.TongueSpeed);
+        rope.Init(stats.TongueSpeed, stats.TongueRangeExpandSpeed, stats.MaxTongueShotDistance);
     }
 
     private void Update()

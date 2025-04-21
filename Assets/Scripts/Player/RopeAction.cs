@@ -1,13 +1,15 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class RopeAction : MonoBehaviour
 {
     [FoldoutGroup("Attach Ray Settings"), Tooltip("로프가 부착될 수 있는 오브젝트의 레이어 마스크")]
     [SerializeField] private LayerMask ropeAttachLayer = default;
     [FoldoutGroup("Attach Ray Settings"), Tooltip("로프 발사 최대 거리")]
-    [SerializeField] private float raycastDistance = 20f;
+    [SerializeField] private float maxTongueShotDistance = 20f;
+    private float tongueShotDistance = 0;
 
     [FoldoutGroup("Rope Physics"), Tooltip("로프 최대 길이 (SpringJoint 거리)")]
     [SerializeField] private float maxRopeDistance = 18f;
@@ -47,6 +49,16 @@ public class RopeAction : MonoBehaviour
     private SlippingPlatform currentSlippingPlatform = null;
     private float currentSlipDistance = 0f;
     private Vector3 initialAttachPosition;
+
+
+    [SerializeField]
+    PlayerStats stat;
+    float expandSpeed;
+
+    [SerializeField]
+    RectTransform circleTransform;
+
+    bool isHolding;
 
     private void Awake()
     {
@@ -104,11 +116,28 @@ public class RopeAction : MonoBehaviour
         ResetTongueTransform();
     }
 
-    public void Init(float speed)
+    public void Init(float _tongueSpeed, float _expandSpeed, float _maxTongueDistance)
     {
         if (!enabled) return;
-        tongueSpeed = speed;
-        Debug.Log($"[RopeAction] Initialized with Tongue Speed: {tongueSpeed}");
+
+        tongueSpeed = _tongueSpeed;
+        expandSpeed = _expandSpeed;
+        maxTongueShotDistance = _maxTongueDistance;
+    }
+
+    public void OnInput(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            circleTransform.gameObject.SetActive(true);
+            isHolding = true;
+        }
+        else if (context.canceled || isAttached)
+        {
+            circleTransform.gameObject.SetActive(false);
+            tongueShotDistance = 0;
+            isHolding = false;
+        }
     }
 
     private void Update()
@@ -138,21 +167,29 @@ public class RopeAction : MonoBehaviour
                 ResetTongueTransform();
             }
         }
+
+        if (isHolding && tongueShotDistance < maxTongueShotDistance)
+        {
+            float delta = expandSpeed * Time.deltaTime;
+            tongueShotDistance = Mathf.Clamp(tongueShotDistance + delta, 0, maxTongueShotDistance);
+            circleTransform.sizeDelta = new Vector2(tongueShotDistance * 200, tongueShotDistance * 200);
+        }
     }
 
     public void RopeShoot(Vector2 direction)
     {
         if (!enabled || isAttached || isFlying) return;
 
-        OnShot?.Invoke();
 
-        hitInfo = Physics2D.Raycast(tongueOrigin.position, direction.normalized, raycastDistance, ropeAttachLayer);
+        hitInfo = Physics2D.Raycast(tongueOrigin.position, direction.normalized, tongueShotDistance, ropeAttachLayer);
 
         if (hitInfo.collider == null)
         {
             Debug.Log("[RopeAction] Rope missed.");
             return;
         }
+
+        OnShot?.Invoke();
 
         Vector3 hitPoint = hitInfo.point;
         Collider2D hitCollider = hitInfo.collider;
@@ -379,9 +416,9 @@ public class RopeAction : MonoBehaviour
         {
             Gizmos.color = Color.cyan;
             Vector3 gizmoDirection = transform.right;
-            Gizmos.DrawLine(tongueOrigin.position, tongueOrigin.position + gizmoDirection * raycastDistance);
+            Gizmos.DrawLine(tongueOrigin.position, tongueOrigin.position + gizmoDirection * tongueShotDistance);
             Gizmos.color = new Color(0f, 1f, 1f, 0.1f);
-            Gizmos.DrawWireSphere(tongueOrigin.position, raycastDistance);
+            Gizmos.DrawWireSphere(tongueOrigin.position, tongueShotDistance);
         }
 
         if (!Application.isPlaying) return;
