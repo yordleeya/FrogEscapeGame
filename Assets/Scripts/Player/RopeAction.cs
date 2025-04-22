@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class RopeAction : MonoBehaviour
 {
@@ -52,10 +53,10 @@ public class RopeAction : MonoBehaviour
 
     float expandSpeed;
 
-    [SerializeField]
-    RectTransform circleTransform;
-
     bool isHolding;
+
+    [SerializeField]
+    Slider tongueGazeSlider;
 
     private void Awake()
     {
@@ -109,6 +110,7 @@ public class RopeAction : MonoBehaviour
         if (!enabled) return;
 
         initialTongueBodyType = tongueRigidbody.bodyType;
+        tongueGazeSlider.maxValue = maxTongueShotDistance;
         tongueRigidbody.simulated = false;
         ResetTongueTransform();
     }
@@ -127,13 +129,12 @@ public class RopeAction : MonoBehaviour
         if (context.started)
         {
             tongueShotDistance = 0;
-            circleTransform.gameObject.SetActive(true);
             isHolding = true;
         }
         else if (context.canceled || isAttached)
         {
+            tongueGazeSlider.value = 0;
             isHolding = false;
-            circleTransform.gameObject.SetActive(false);
         }
     }
 
@@ -169,7 +170,7 @@ public class RopeAction : MonoBehaviour
         {
             float delta = expandSpeed * Time.deltaTime;
             tongueShotDistance = Mathf.Clamp(tongueShotDistance + delta, 0, maxTongueShotDistance);
-            circleTransform.sizeDelta = new Vector2(tongueShotDistance * 200, tongueShotDistance * 200);
+            tongueGazeSlider.value = tongueShotDistance;
         }
     }
 

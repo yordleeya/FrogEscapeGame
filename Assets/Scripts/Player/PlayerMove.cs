@@ -45,9 +45,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     LayerMask groundLayer;
 
-    [SerializeField]
-    Transform rangeUI;
-
     RaycastHit2D hit;
     Vector2 direction = Vector2.right;
     SpriteRenderer spriteRenderer;
