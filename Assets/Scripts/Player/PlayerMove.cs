@@ -64,16 +64,9 @@ public class PlayerMove : MonoBehaviour
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
 
-        rope.Init(stats.TongueSpeed, stats.TongueRangeExpandSpeed, stats.MaxTongueShotDistance);
+        rope.Init(stats.TongueSpeed, stats.TongueShotDistance);
     }
 
-    private void Update()
-    {
-        if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
-        {
-            transform.localEulerAngles = Vector3.zero;
-        }
-    }
     private void FixedUpdate()
     {
         if (isMoving)
@@ -81,15 +74,18 @@ public class PlayerMove : MonoBehaviour
             if (Mathf.Abs(rigid.linearVelocityX) < Mathf.Abs(maxVelocity.x))
             {
                 rigid.linearVelocityX = moveX;
-
             }
-
 
             OnPlayerMove?.Invoke();
         }
         else
         {
             rigid.linearVelocityX *= 0.8f;
+        }
+
+        if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
+        {
+            transform.localEulerAngles = Vector3.zero;
         }
     }
 
@@ -128,29 +124,22 @@ public class PlayerMove : MonoBehaviour
 
         Vector2 mouseDirection = (worldMousePos - playerPos).normalized;
 
-        if (!rope.IsAttached)
+        if (context.started)
         {
-            rope.RopeShoot(mouseDirection, context);
-        }
-        else
-        {
-            if (context.started)
+            if (!rope.IsAttached)
             {
-                // Handle에 부착된 경우는 점프하지 않음
-                if (rope.IsAttachedToHandle)
-                {
-                    rope.Released();
-                    return;
-                }
-
-                if (Mathf.Abs(rigid.linearVelocity.x) > 1 || Mathf.Abs(rigid.linearVelocityY) > 1)
-                {
-                    direction = rigid.linearVelocity.normalized;
-                }
-
-                rope.Released();
-                Jump(mouseDirection, JumpType.MouseRelease);
+                rope.RopeShoot(mouseDirection);
             }
+        }
+        else if(context.canceled)
+        {
+            if (Mathf.Abs(rigid.linearVelocity.x) > 1 || Mathf.Abs(rigid.linearVelocityY) > 1)
+            {
+                direction = rigid.linearVelocity.normalized;
+            }
+
+            rope.Released();
+            Jump(mouseDirection, JumpType.MouseRelease);
         }
     }
 

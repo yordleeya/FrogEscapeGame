@@ -36,27 +36,18 @@ public class RopeAction : MonoBehaviour
     private Rigidbody2D playerRigid;
 
     private float tongueSpeed;
+
     private bool isAttached = false;
     public bool IsAttached => isAttached;
-    
-    // Handle 부착 여부를 확인하는 프로퍼티 추가
-    public bool IsAttachedToHandle => isAttached && hitInfo.collider != null && hitInfo.collider.GetComponent<HandleTrigger>() != null;
+
 
     private bool isFlying = false;
-    private RaycastHit2D hitInfo;
 
-    private RigidbodyType2D initialTongueBodyType;
     private bool isSlipping = false;
     private SlippingPlatform currentSlippingPlatform = null;
     private float currentSlipDistance = 0f;
     private Vector3 initialAttachPosition;
 
-    float expandSpeed;
-
-    bool isHolding;
-
-    [SerializeField]
-    Slider tongueGazeSlider;
 
     private void Awake()
     {
@@ -109,208 +100,37 @@ public class RopeAction : MonoBehaviour
     {
         if (!enabled) return;
 
-        initialTongueBodyType = tongueRigidbody.bodyType;
-        tongueGazeSlider.maxValue = maxTongueShotDistance;
         tongueRigidbody.simulated = false;
         ResetTongueTransform();
     }
 
-    public void Init(float _tongueSpeed, float _expandSpeed, float _maxTongueDistance)
+    public void Init(float _tongueSpeed, float _tongueShotDistance)
     {
         if (!enabled) return;
 
         tongueSpeed = _tongueSpeed;
-        expandSpeed = _expandSpeed;
-        maxTongueShotDistance = _maxTongueDistance;
-    }
-
-    public void OnInput(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            tongueShotDistance = 0;
-            isHolding = true;
-        }
-        else if (context.canceled || isAttached)
-        {
-            tongueGazeSlider.value = 0;
-            isHolding = false;
-        }
-    }
-
-    private void Update()
-    {
-        if (!enabled) return;
-
-        if (isFlying)
-        {
-            FlyTongue();
-            UpdateLineRenderer();
-            return;
-        }
-
-        if (isAttached)
-        {
-            UpdateLineRenderer();
-
-            if (isSlipping && currentSlippingPlatform != null)
-            {
-                HandleSlipping();
-            }
-        }
-        else
-        {
-            if (tongueRigidbody != null && !tongueRigidbody.simulated)
-            {
-                ResetTongueTransform();
-            }
-        }
-
-        if (isHolding && tongueShotDistance < maxTongueShotDistance)
-        {
-            float delta = expandSpeed * Time.deltaTime;
-            tongueShotDistance = Mathf.Clamp(tongueShotDistance + delta, 0, maxTongueShotDistance);
-            tongueGazeSlider.value = tongueShotDistance;
-        }
+        tongueShotDistance = _tongueShotDistance;
     }
 
     Vector2 mouseDirection;
-    public void RopeShoot(Vector2 direction , InputAction.CallbackContext context)
+
+    public void RopeShoot(Vector2 direction)
     {
-        if ( isAttached || isFlying) return;
+        if (isAttached || isFlying) return;
 
-        if (context.canceled)
-        {
-            mouseDirection = direction;
+        mouseDirection = direction;
 
-            hitInfo = Physics2D.Raycast(tongueOrigin.position, mouseDirection, tongueShotDistance, ropeAttachLayer);
 
-            if (hitInfo.collider == null)
-            {
-                Debug.Log("[RopeAction] Rope missed.");
-                return;
-            }
+        tongue.position = tongueOrigin.position;
+        tongueRigidbody.bodyType = RigidbodyType2D.Dynamic;
+        tongueRigidbody.AddForce(direction * tongueSpeed, ForceMode2D.Impulse);
 
-            OnShot?.Invoke();
+        OnShot?.Invoke();
 
-            Vector3 hitPoint = hitInfo.point;
-            Collider2D hitCollider = hitInfo.collider;
-            currentSlippingPlatform = null;
-            bool attachSuccess = false;
-
-            if (hitCollider.CompareTag("Platform"))
-            {
-                hitCollider.TryGetComponent<SlippingPlatform>(out currentSlippingPlatform);
-                attachSuccess = true;
-                Debug.Log($"[RopeAction] Hit Platform: '{hitCollider.name}'. Slipping: {currentSlippingPlatform != null}");
-            }
-            else if (hitCollider.CompareTag("Land"))
-            {
-                Debug.Log($"[RopeAction] Hit Land ('{hitCollider.name}'). Cannot attach.");
-                return;
-            }
-            else
-            {
-                Debug.LogWarning($"[RopeAction] Hit object with unhandled tag: Tag='{hitCollider.tag}', Name='{hitCollider.name}'");
-                return;
-            }
-
-            if (attachSuccess)
-            {
-                tongue.position = hitPoint;
-                tongueRigidbody.simulated = true;
-                tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
-                tongueRigidbody.linearVelocity = Vector2.zero;
-                tongueRigidbody.angularVelocity = 0f;
-
-                isFlying = true;
-                lineRenderer.enabled = true;
-            }
-        }
+        UpdateLineRenderer();
     }
 
-    private void FlyTongue()
-    {
-        Vector2 currentPos = tongueRigidbody.position;
-        Vector2 targetPos = hitInfo.point;
-        Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, tongueSpeed * Time.deltaTime);
-        tongueRigidbody.MovePosition(newPos);
-
-        if (Vector2.Distance(newPos, targetPos) < 0.05f)
-        {
-            isFlying = false;
-            // 👇 추가된 코드: 붙을 때 법선 방향으로 살짝 밀어 넣기
-            Vector2 offset = -hitInfo.normal * 0.01f; // 법선 방향으로 0.05만큼 안쪽으로
-            Vector2 adjustedPos = hitInfo.point + offset;
-
-            tongueRigidbody.MovePosition(adjustedPos); // 수정된 위치로 혀를 이동
-
-            tongueRigidbody.linearVelocity = Vector2.zero;
-
-
-            if (hitInfo.collider == null || !hitInfo.collider.CompareTag("Platform"))
-            {
-                 Debug.LogWarning("[RopeAction] Target platform disappeared or changed tag during flight.");
-                 ResetRopeState();
-                 return;
-            }
-
-            if (currentSlippingPlatform != null)
-            {
-                AttachToSlippingPlatform();
-            }
-            else
-            {
-                AttachToStaticPoint();
-            }
-        }
-    }
-
-    private void AttachToSlippingPlatform()
-    {
-        Debug.Log($"[RopeAction] Attaching to Slipping Platform: {currentSlippingPlatform.gameObject.name}");
-        isSlipping = true;
-        currentSlipDistance = 0f;
-        initialAttachPosition = tongueRigidbody.position;
-
-        tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
-        tongueRigidbody.simulated = true;
-
-        ConnectSpringJoint();
-
-        isAttached = true;
-        OnAttached?.Invoke();
-    }
-
-    private void AttachToStaticPoint()
-    {
-        if (hitInfo.collider == null) return;
-        Debug.Log($"[RopeAction] Attaching to Static Point: {hitInfo.collider.name}");
-
-        // Handle에 부착될 때는 Kinematic으로 설정
-        if (hitInfo.collider.GetComponent<HandleTrigger>())
-        {
-            tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
-        }
-        else
-        {
-            tongueRigidbody.bodyType = RigidbodyType2D.Static;
-        }
-        
-        tongueRigidbody.simulated = true;
-
-        ConnectSpringJoint();
-
-        isAttached = true;
-        
-        // Handle에 부착될 때는 점프하지 않도록 수정
-        if (!hitInfo.collider.GetComponent<HandleTrigger>())
-        {
-            OnAttached?.Invoke();
-        }
-    }
-
-    private void ConnectSpringJoint()
+    public void ConnectSpringJoint()
     {
         if (springJoint == null || tongueRigidbody == null || playerRigid == null) return;
 
@@ -320,29 +140,6 @@ public class RopeAction : MonoBehaviour
 
         springJoint.enabled = true;
         Debug.Log($"[RopeAction] SpringJoint connected. Initial distance: {springJoint.distance}");
-    }
-
-    private void HandleSlipping()
-    {
-        if (tongueRigidbody.bodyType != RigidbodyType2D.Kinematic || currentSlippingPlatform == null)
-        {
-            return;
-        }
-
-        float speed = currentSlippingPlatform.slipSpeed;
-        float maxDistance = currentSlippingPlatform.maxSlipDistance;
-
-        Vector2 slipDelta = Vector2.down * speed * Time.deltaTime;
-        Vector2 newPosition = tongueRigidbody.position + slipDelta;
-
-        tongueRigidbody.MovePosition(newPosition);
-
-        currentSlipDistance = Vector2.Distance(initialAttachPosition, newPosition);
-        if (currentSlipDistance >= maxDistance)
-        {
-            Debug.Log($"[RopeAction] Max slip distance ({maxDistance}) reached. Releasing rope.");
-            ResetRopeState();
-        }
     }
 
     public void Released()
@@ -379,7 +176,8 @@ public class RopeAction : MonoBehaviour
         if (tongueRigidbody != null)
         {
             // 먼저 bodyType 되돌리기 (Static → Dynamic 등)
-            tongueRigidbody.bodyType = initialTongueBodyType;
+            tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
+
             // 그 다음 속도 초기화
             tongueRigidbody.linearVelocity = Vector2.zero;
             tongueRigidbody.angularVelocity = 0f;
@@ -405,7 +203,9 @@ public class RopeAction : MonoBehaviour
 
     private void UpdateLineRenderer()
     {
-        if (!lineRenderer.enabled || playerRigid == null || tongue == null) return;
+        if (playerRigid == null || tongue == null) return;
+
+        lineRenderer.enabled = true;
 
         lineRenderer.SetPosition(0, playerRigid.position);
         lineRenderer.SetPosition(1, tongue.position);
@@ -420,15 +220,6 @@ public class RopeAction : MonoBehaviour
             Gizmos.DrawLine(tongueOrigin.position, mouseDirection * tongueShotDistance);
             Gizmos.color = new Color(0f, 1f, 1f, 0.1f);
             Gizmos.DrawWireSphere(tongueOrigin.position, tongueShotDistance);
-        }
-
-        if (!Application.isPlaying) return;
-
-        if (isSlipping)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(initialAttachPosition, 0.15f);
-            if (tongue != null) Gizmos.DrawLine(initialAttachPosition, tongue.position);
         }
     }
 }
