@@ -158,19 +158,12 @@ public class PlayerMove : MonoBehaviour
         }
         else if(context.canceled)
         {
-            if (Mathf.Abs(rigid.linearVelocity.x) > 1 || Mathf.Abs(rigid.linearVelocityY) > 1)
-            {
-                direction = rigid.linearVelocity.normalized;
-            }
-
             if (rope.IsAttached)
             {
                 Jump(mouseDirection, JumpType.MouseRelease);
             }
 
             rope.Released();
-
-
         }
     }
 

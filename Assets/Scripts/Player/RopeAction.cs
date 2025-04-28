@@ -149,7 +149,7 @@ public class RopeAction : MonoBehaviour
 
         springJoint.connectedBody = tongueRigidbody;
         float currentDistance = Vector2.Distance(playerRigid.position, tongueRigidbody.position);
-        springJoint.distance = Mathf.Clamp(currentDistance, minRopeDistance, maxRopeDistance) * 0.8f;
+        springJoint.distance = Mathf.Clamp(currentDistance, minRopeDistance, maxRopeDistance) * 0.4f;
 
         springJoint.enabled = true;
         Debug.Log($"[RopeAction] SpringJoint connected. Initial distance: {springJoint.distance}");
@@ -212,17 +212,7 @@ public class RopeAction : MonoBehaviour
         lineRenderer.SetPosition(1, tongue.position);
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        if (tongueOrigin != null)
-        {
-            Vector3 gizmoDirection = transform.right;
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(tongueOrigin.position, mouseDirection * tongueShotDistance);
-            Gizmos.color = new Color(0f, 1f, 1f, 0.1f);
-            Gizmos.DrawWireSphere(tongueOrigin.position, tongueShotDistance);
-        }
-    }
+
 
     public void ResetTongue()
     {

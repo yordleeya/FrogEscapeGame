@@ -22,6 +22,7 @@ public class TongueAttach : MonoBehaviour
                 case "Ground":
                     rope.ResetRopeState();
                     break;
+
                 case "Object":
                     break;
                 default:
