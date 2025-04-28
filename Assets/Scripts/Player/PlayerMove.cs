@@ -126,7 +126,7 @@ public class PlayerMove : MonoBehaviour
             }
             else
             {
-                moveX = direction.x * speed * 0.5f;
+                moveX = direction.x * speed * 0.25f;
             }
 
             isMoving = true;

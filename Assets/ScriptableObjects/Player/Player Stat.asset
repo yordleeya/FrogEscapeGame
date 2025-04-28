@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf504957f9749184c8053eb4ea0046e9, type: 3}
   m_Name: Player Stat
   m_EditorClassIdentifier: 
-  speed: 4
+  speed: 5
   jumpPower: 5
   powerGainSpeed: 1
   maxVelocity: {x: 5, y: 15}
-  tongueSpeed: 10
+  tongueSpeed: 15
   tongueShotDistance: 10

@@ -132,7 +132,6 @@ public class RopeAction : MonoBehaviour
 
         tongue.position = tongueOrigin.position;
 
-        tongueRigidbody.simulated = true;
         tongueRigidbody.bodyType = RigidbodyType2D.Dynamic;
 
         tongueRigidbody.linearVelocity = Vector2.zero;
@@ -149,7 +148,7 @@ public class RopeAction : MonoBehaviour
 
         springJoint.connectedBody = tongueRigidbody;
         float currentDistance = Vector2.Distance(playerRigid.position, tongueRigidbody.position);
-        springJoint.distance = Mathf.Clamp(currentDistance, minRopeDistance, maxRopeDistance) * 0.4f;
+        springJoint.distance = Mathf.Clamp(currentDistance, minRopeDistance, maxRopeDistance);
 
         springJoint.enabled = true;
         Debug.Log($"[RopeAction] SpringJoint connected. Initial distance: {springJoint.distance}");
@@ -220,7 +219,6 @@ public class RopeAction : MonoBehaviour
         {
             tongueRigidbody.linearVelocity = Vector3.zero;
             tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
-            tongueRigidbody.simulated = false;
             tongueRigidbody.angularVelocity = 0;
         }
     }
