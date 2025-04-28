@@ -38,7 +38,6 @@ public class RopeAction : MonoBehaviour
     private float tongueSpeed;
 
     private bool isAttached = false;
-    public bool IsAttached => isAttached;
 
 
     private bool isFlying = false;
@@ -100,8 +99,15 @@ public class RopeAction : MonoBehaviour
     {
         if (!enabled) return;
 
-        tongueRigidbody.simulated = false;
         ResetTongueTransform();
+    }
+
+    private void Update()
+    {
+        if(isShooting)
+        {
+            UpdateLineRenderer();
+        }
     }
 
     public void Init(float _tongueSpeed, float _tongueShotDistance)
@@ -114,20 +120,27 @@ public class RopeAction : MonoBehaviour
 
     Vector2 mouseDirection;
 
+    bool isShooting = false;
+
+    public bool IsAttached { get => isAttached; set => isAttached = value; }
+
     public void RopeShoot(Vector2 direction)
     {
         if (isAttached || isFlying) return;
 
         mouseDirection = direction;
 
-
         tongue.position = tongueOrigin.position;
+
+        tongueRigidbody.simulated = true;
         tongueRigidbody.bodyType = RigidbodyType2D.Dynamic;
+
+        tongueRigidbody.linearVelocity = Vector2.zero;
         tongueRigidbody.AddForce(direction * tongueSpeed, ForceMode2D.Impulse);
 
+        Debug.Log(direction);
         OnShot?.Invoke();
-
-        UpdateLineRenderer();
+        isShooting = true;
     }
 
     public void ConnectSpringJoint()
@@ -136,7 +149,7 @@ public class RopeAction : MonoBehaviour
 
         springJoint.connectedBody = tongueRigidbody;
         float currentDistance = Vector2.Distance(playerRigid.position, tongueRigidbody.position);
-        springJoint.distance = Mathf.Clamp(currentDistance, minRopeDistance, maxRopeDistance);
+        springJoint.distance = Mathf.Clamp(currentDistance, minRopeDistance, maxRopeDistance) * 0.8f;
 
         springJoint.enabled = true;
         Debug.Log($"[RopeAction] SpringJoint connected. Initial distance: {springJoint.distance}");
@@ -145,13 +158,11 @@ public class RopeAction : MonoBehaviour
     public void Released()
     {
         if (!enabled) return;
-        if (isAttached || isFlying)
-        {
-            ResetRopeState();
-        }
+
+        ResetRopeState();
     }
 
-    private void ResetRopeState()
+    public void ResetRopeState()
     {
         Debug.LogWarning("ResetRopeState() 호출됨! 혀가 해제됨!");
         if (!enabled) return;
@@ -159,6 +170,7 @@ public class RopeAction : MonoBehaviour
         Debug.Log("[RopeAction] Resetting rope state...");
         bool wasAttached = isAttached;
 
+        isShooting = false;
         isAttached = false;
         isFlying = false;
         isSlipping = false;
@@ -173,19 +185,8 @@ public class RopeAction : MonoBehaviour
             springJoint.connectedBody = null;
         }
 
-        if (tongueRigidbody != null)
-        {
-            // 먼저 bodyType 되돌리기 (Static → Dynamic 등)
-            tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
-
-            // 그 다음 속도 초기화
-            tongueRigidbody.linearVelocity = Vector2.zero;
-            tongueRigidbody.angularVelocity = 0f;
-            //마지막에 비활성화
-            tongueRigidbody.simulated = false;
-
-            ResetTongueTransform();
-        }
+        ResetTongue();
+        ResetTongueTransform();
 
         if (wasAttached)
         {
@@ -220,6 +221,17 @@ public class RopeAction : MonoBehaviour
             Gizmos.DrawLine(tongueOrigin.position, mouseDirection * tongueShotDistance);
             Gizmos.color = new Color(0f, 1f, 1f, 0.1f);
             Gizmos.DrawWireSphere(tongueOrigin.position, tongueShotDistance);
+        }
+    }
+
+    public void ResetTongue()
+    {
+        if (tongueRigidbody != null)
+        {
+            tongueRigidbody.linearVelocity = Vector3.zero;
+            tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
+            tongueRigidbody.simulated = false;
+            tongueRigidbody.angularVelocity = 0;
         }
     }
 }

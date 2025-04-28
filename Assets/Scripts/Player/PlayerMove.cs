@@ -114,7 +114,7 @@ public class PlayerMove : MonoBehaviour
 
 
     public void OnRope(InputAction.CallbackContext context)
-{
+    {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
 
         Vector3 worldMousePos3D = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
@@ -138,8 +138,14 @@ public class PlayerMove : MonoBehaviour
                 direction = rigid.linearVelocity.normalized;
             }
 
+            if (rope.IsAttached)
+            {
+                Jump(mouseDirection, JumpType.MouseRelease);
+            }
+
             rope.Released();
-            Jump(mouseDirection, JumpType.MouseRelease);
+
+
         }
     }
 
