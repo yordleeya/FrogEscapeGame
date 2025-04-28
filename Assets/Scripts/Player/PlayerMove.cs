@@ -10,6 +10,9 @@ public class PlayerMove : MonoBehaviour
     public UnityEvent OnPlayerMove;
     public UnityEvent OnPlayerJump;
 
+    private bool isAttachedToSnake = false;
+    private Transform attachedSnakeHead = null;
+
 
     [Required("stat 에셋을 넣지 않으면 플레이어가 움직일 수 없습니다.\n" +
     "PlayerStats형식의 스크립터블 오브젝트를 넣어주세요.")]
@@ -22,6 +25,21 @@ public class PlayerMove : MonoBehaviour
         Attach,
         EatFly,
         Mushroom
+    }
+
+    // Snake에 부착
+    public void AttachToSnake(Transform snakeHead)
+    {
+        isAttachedToSnake = true;
+        attachedSnakeHead = snakeHead;
+        rigid.linearVelocity = Vector2.zero; // 속도 초기화
+    }
+
+    // Snake에서 해제
+    public void DetachFromSnake()
+    {
+        isAttachedToSnake = false;
+        attachedSnakeHead = null;
     }
 
     private readonly Dictionary<JumpType, float> jumpMultipliers = new()
@@ -86,6 +104,13 @@ public class PlayerMove : MonoBehaviour
         if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
         {
             transform.localEulerAngles = Vector3.zero;
+        }
+
+        if (isAttachedToSnake && attachedSnakeHead != null)
+        {
+            // Snake 머리 위치에 플레이어를 고정
+            transform.position = attachedSnakeHead.position;
+            return; // 이동 입력 무시
         }
     }
 
