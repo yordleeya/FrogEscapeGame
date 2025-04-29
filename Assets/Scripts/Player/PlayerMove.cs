@@ -211,6 +211,16 @@ public class PlayerMove : MonoBehaviour
             Debug.LogWarning($"JumpType {jumpType}의 가중치가 설정되지 않았습니다.");
         }
     }
+    public void SetTransparent(bool isTransparent)
+    {
+        var sprite = GetComponent<SpriteRenderer>();
+        if (sprite != null)
+        {
+        var color = sprite.color;
+        color.a = isTransparent ? 0f : 1f;
+            sprite.color = color;
+        }
+    }
 
 
 }
