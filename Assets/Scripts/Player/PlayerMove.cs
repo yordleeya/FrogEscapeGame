@@ -24,7 +24,8 @@ public class PlayerMove : MonoBehaviour
         MouseRelease,
         Attach,
         EatFly,
-        Mushroom
+        Mushroom,
+        Move
     }
 
     // Snake에 부착
@@ -47,7 +48,8 @@ public class PlayerMove : MonoBehaviour
         { JumpType.MouseRelease, 1f },
         { JumpType.Attach, 0.5f },
         { JumpType.EatFly, 1.5f },
-        { JumpType.Mushroom, 2f }
+        { JumpType.Mushroom, 2f },
+        {JumpType.Move, 1f }
     };
 
     Rigidbody2D rigid;
@@ -87,7 +89,7 @@ public class PlayerMove : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isMoving)
+        if (isMoving && rope.IsAttached)
         {
             if (Mathf.Abs(rigid.linearVelocityX) < Mathf.Abs(maxVelocity.x))
             {
@@ -95,10 +97,6 @@ public class PlayerMove : MonoBehaviour
             }
 
             OnPlayerMove?.Invoke();
-        }
-        else
-        {
-            rigid.linearVelocityX *= 0.8f;
         }
 
         if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
@@ -116,24 +114,25 @@ public class PlayerMove : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if ((context.started || context.performed))
+        if (RhythmManager.IsOnBeat)
         {
+
             direction = context.ReadValue<Vector2>();
 
-            if (rope.IsAttached)
+            if (rope.IsAttached && context.performed)
             {
                 moveX = direction.x * speed;
             }
-            else
+            else if (context.started)
             {
-                moveX = direction.x * speed * 0.25f;
+                Jump(direction + Vector2.up, JumpType.Move);
             }
 
-            isMoving = true;
-        }
-        else
-        {
-            isMoving = false;
+            else if (context.canceled)
+            {
+                isMoving = true;
+            }
+
         }
     }
 
@@ -149,7 +148,7 @@ public class PlayerMove : MonoBehaviour
 
         Vector2 mouseDirection = (worldMousePos - playerPos).normalized;
 
-        if (context.started)
+        if (context.started && RhythmManager.IsOnBeat)
         {
             if (!rope.IsAttached)
             {
