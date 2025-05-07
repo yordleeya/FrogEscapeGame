@@ -49,7 +49,7 @@ public class PlayerMove : MonoBehaviour
         { JumpType.Attach, 0.5f },
         { JumpType.EatFly, 1.5f },
         { JumpType.Mushroom, 2f },
-        {JumpType.Move, 1f }
+        {JumpType.Move, 0.5f }
     };
 
     Rigidbody2D rigid;
@@ -58,6 +58,7 @@ public class PlayerMove : MonoBehaviour
     Vector2 maxVelocity;
     float moveX;
     bool isMoving = false;
+    bool isOnGround = false;
 
     [SerializeField]
     RopeAction rope;
@@ -84,7 +85,7 @@ public class PlayerMove : MonoBehaviour
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
 
-        rope.Init(stats.TongueSpeed, stats.TongueShotDistance);
+        rope.Init(stats.TongueSpeed);
     }
 
     private void FixedUpdate()
@@ -102,6 +103,11 @@ public class PlayerMove : MonoBehaviour
         if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
         {
             transform.localEulerAngles = Vector3.zero;
+            isOnGround = true;
+        }
+        else
+        {
+            isOnGround = false;
         }
 
         if (isAttachedToSnake && attachedSnakeHead != null)
@@ -114,25 +120,40 @@ public class PlayerMove : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        direction = context.ReadValue<Vector2>();
+        if(context.started)
+        {
+            transform.localScale = new Vector3(-Mathf.Sign(direction.x), 1, 1);
+        }
+        else if (context.performed)
+        {
+            if (rope.IsAttached)
+            {
+                isMoving = true;
+
+                moveX = direction.x * speed;
+                rigid.linearVelocityX += moveX;
+            }
+
+        }
+        else if (context.canceled)
+        {
+            isMoving = false;
+
+            if(rope.IsAttached)
+            {
+                rigid.linearVelocityX *= 0.6f;
+            }
+        }
+
+
         if (RhythmManager.IsOnBeat)
         {
 
-            direction = context.ReadValue<Vector2>();
-
-            if (rope.IsAttached && context.performed)
-            {
-                moveX = direction.x * speed;
-            }
-            else if (context.started)
+            if (context.started && isOnGround)
             {
                 Jump(direction + Vector2.up, JumpType.Move);
             }
-
-            else if (context.canceled)
-            {
-                isMoving = true;
-            }
-
         }
     }
 
@@ -213,11 +234,10 @@ public class PlayerMove : MonoBehaviour
     }
     public void SetTransparent(bool isTransparent)
     {
-        var sprite = GetComponent<SpriteRenderer>();
-        if (sprite != null)
+        if (TryGetComponent<SpriteRenderer>(out var sprite))
         {
-        var color = sprite.color;
-        color.a = isTransparent ? 0f : 1f;
+            var color = sprite.color;
+            color.a = isTransparent ? 0f : 1f;
             sprite.color = color;
         }
     }

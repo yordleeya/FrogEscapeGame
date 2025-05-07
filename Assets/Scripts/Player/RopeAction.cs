@@ -10,7 +10,7 @@ public class RopeAction : MonoBehaviour
     [SerializeField] private LayerMask ropeAttachLayer = default;
     [FoldoutGroup("Attach Ray Settings"), Tooltip("로프 발사 최대 거리")]
     [SerializeField] private float maxTongueShotDistance = 20f;
-    private float tongueShotDistance = 0;
+    private readonly float tongueShotDistance = 0;
 
     [FoldoutGroup("Rope Physics"), Tooltip("로프 최대 길이 (SpringJoint 거리)")]
     [SerializeField] private float maxRopeDistance = 18f;
@@ -110,12 +110,11 @@ public class RopeAction : MonoBehaviour
         }
     }
 
-    public void Init(float _tongueSpeed, float _tongueShotDistance)
+    public void Init(float _tongueSpeed)
     {
         if (!enabled) return;
 
         tongueSpeed = _tongueSpeed;
-        tongueShotDistance = _tongueShotDistance;
     }
 
     Vector2 mouseDirection;
@@ -166,7 +165,6 @@ public class RopeAction : MonoBehaviour
         Debug.LogWarning("ResetRopeState() 호출됨! 혀가 해제됨!");
         if (!enabled) return;
 
-        Debug.Log("[RopeAction] Resetting rope state...");
         bool wasAttached = isAttached;
 
         isShooting = false;

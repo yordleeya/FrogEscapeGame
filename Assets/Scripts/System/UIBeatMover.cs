@@ -33,6 +33,7 @@ public class UIBeatMover : MonoBehaviour
     public void OnBeat()
     {
         float interval = 60f / rm.Bpm;
+
         rectTransform.anchoredPosition = startPosition;
 
         rectTransform

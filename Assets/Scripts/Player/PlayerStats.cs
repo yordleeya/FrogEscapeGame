@@ -27,7 +27,7 @@ public class PlayerStats : ScriptableObject
 
     [FoldoutGroup("Tongue")]
     [SerializeField]
-    float tongueShotDistance;
+    float maxTongueDistance;
 
 
     public float Speed { get => speed;}
@@ -35,5 +35,5 @@ public class PlayerStats : ScriptableObject
     public float PowerGainSpeed { get => powerGainSpeed;}
     public Vector2 MaxVelocity { get => maxVelocity; }
     public float TongueSpeed { get => tongueSpeed;}
-    public float TongueShotDistance { get => tongueShotDistance;}
+    public float MaxTongueDistance { get => maxTongueDistance;}
 }

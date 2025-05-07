@@ -17,4 +17,4 @@ MonoBehaviour:
   powerGainSpeed: 1
   maxVelocity: {x: 5, y: 15}
   tongueSpeed: 15
-  tongueShotDistance: 10
+  maxTongueDistance: 5

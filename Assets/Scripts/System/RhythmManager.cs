@@ -20,19 +20,16 @@ public class RhythmManager : MonoBehaviour
     private static bool isOnBeat = false;
     public static bool IsOnBeat => isOnBeat;
 
-    private bool isRunning = false;
     private CancellationTokenSource cts;
 
     private void OnEnable()
     {
         cts = new CancellationTokenSource();
-        isRunning = true;
         StartRhythmLoop(cts.Token).Forget();
     }
 
     private void OnDisable()
     {
-        isRunning = false;
         cts?.Cancel();
         cts?.Dispose();
         cts = null;
@@ -42,12 +39,20 @@ public class RhythmManager : MonoBehaviour
     {
         float interval = 60f / bpm;
 
-        while (isRunning && !token.IsCancellationRequested)
+        while (!token.IsCancellationRequested)
         {
             isOnBeat = true;
-            OnBeatEnter?.Invoke();
 
-            await OffsetDelay(token); // 반드시 실행되게 await로 연결
+            try
+            {
+                OnBeatEnter?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"OnBeatEnter.Invoke() 예외 발생: {ex}");
+            }
+
+            await OffsetDelay(token);
 
             await UniTask.Delay(TimeSpan.FromSeconds(interval), ignoreTimeScale: true, cancellationToken: token);
         }
@@ -59,11 +64,23 @@ public class RhythmManager : MonoBehaviour
         {
             await UniTask.Delay(TimeSpan.FromSeconds(offset), ignoreTimeScale: true, cancellationToken: token);
             isOnBeat = false;
-            OnBeatExit?.Invoke();
+
+            try
+            {
+                OnBeatExit?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"OnBeatExit.Invoke() 예외 발생: {ex}");
+            }
         }
         catch (OperationCanceledException)
         {
-            // 무시: 해제 중 취소될 수 있음
+            // 취소 무시
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"OffsetDelay 예외: {ex}");
         }
     }
 }
