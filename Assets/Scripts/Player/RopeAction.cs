@@ -9,13 +9,13 @@ public class RopeAction : MonoBehaviour
     [FoldoutGroup("Attach Ray Settings"), Tooltip("로프가 부착될 수 있는 오브젝트의 레이어 마스크")]
     [SerializeField] private LayerMask ropeAttachLayer = default;
     [FoldoutGroup("Attach Ray Settings"), Tooltip("로프 발사 최대 거리")]
-    [SerializeField] private float maxTongueShotDistance = 20f;
+    [SerializeField] private float maxTongueShotDistance = 10f;
     private readonly float tongueShotDistance = 0;
 
     [FoldoutGroup("Rope Physics"), Tooltip("로프 최대 길이 (SpringJoint 거리)")]
-    [SerializeField] private float maxRopeDistance = 18f;
+    [SerializeField] private float maxRopeDistance = 5f;
     [FoldoutGroup("Rope Physics"), Tooltip("로프 최소 길이 (SpringJoint 거리)")]
-    [SerializeField] private float minRopeDistance = 1f;
+    [SerializeField] private float minRopeDistance = 0.3f;
 
     [FoldoutGroup("Tongue References"), Tooltip("혀(로프 끝) 역할을 하는 오브젝트의 Transform")]
     [Required(InfoMessageType.Error), SerializeField] private Transform tongue = null;
