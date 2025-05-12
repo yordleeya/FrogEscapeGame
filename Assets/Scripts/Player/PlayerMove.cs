@@ -105,7 +105,7 @@ public class PlayerMove : MonoBehaviour
             OnPlayerMove?.Invoke();
         }
 
-        if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer))
+        if (Physics2D.Raycast(transform.position, Vector2.down, 0.51f, groundLayer))
         {
             transform.localEulerAngles = Vector3.zero;
             isOnGround = true;
@@ -174,9 +174,9 @@ public class PlayerMove : MonoBehaviour
 
         Vector2 mouseDirection = (worldMousePos - playerPos).normalized;
 
-        if (context.started && RhythmManager.IsOnBeat)
+        if (context.started)
         {
-            if (!rope.IsAttached)
+            if (RhythmManager.IsOnBeat && !rope.IsAttached)
             {
                 rope.RopeShoot(mouseDirection);
             }

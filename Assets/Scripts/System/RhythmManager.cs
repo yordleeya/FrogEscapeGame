@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using System.Threading;
+using System.Collections;
 
 public class RhythmManager : MonoBehaviour
 {
@@ -52,7 +53,8 @@ public class RhythmManager : MonoBehaviour
                 Debug.LogError($"OnBeatEnter.Invoke() 예외 발생: {ex}");
             }
 
-            await OffsetDelay(token);
+            // OffsetDelay는 병렬적으로 실행 (isOnBeat를 offset 후에 false로 만들기)
+            _ = OffsetDelay(token); // fire-and-forget
 
             await UniTask.Delay(TimeSpan.FromSeconds(interval), ignoreTimeScale: true, cancellationToken: token);
         }
@@ -64,23 +66,12 @@ public class RhythmManager : MonoBehaviour
         {
             await UniTask.Delay(TimeSpan.FromSeconds(offset), ignoreTimeScale: true, cancellationToken: token);
             isOnBeat = false;
-
-            try
-            {
-                OnBeatExit?.Invoke();
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"OnBeatExit.Invoke() 예외 발생: {ex}");
-            }
+            OnBeatExit?.Invoke();
         }
         catch (OperationCanceledException)
         {
-            // 취소 무시
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"OffsetDelay 예외: {ex}");
+            // 무시
         }
     }
+
 }
