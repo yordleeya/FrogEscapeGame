@@ -136,7 +136,6 @@ public class RopeAction : MonoBehaviour
         tongueRigidbody.linearVelocity = Vector2.zero;
         tongueRigidbody.AddForce(direction * tongueSpeed, ForceMode2D.Impulse);
 
-        Debug.Log(direction);
         OnShot?.Invoke();
         isShooting = true;
     }
@@ -150,7 +149,6 @@ public class RopeAction : MonoBehaviour
         springJoint.distance = Mathf.Clamp(currentDistance, minRopeDistance, maxRopeDistance);
 
         springJoint.enabled = true;
-        Debug.Log($"[RopeAction] SpringJoint connected. Initial distance: {springJoint.distance}");
     }
 
     public void Released()

@@ -7,12 +7,10 @@ using System.Collections;
 
 public class PlayerMove : MonoBehaviour
 {
-    [SerializeField, Header("마우스 릴리즈 점프 배수")]
-    private float mouseReleaseMultiplier = 1f;  
 
     public UnityEvent OnPlayerMove;
     public UnityEvent OnPlayerJump;
-
+   
     private bool isAttachedToSnake = false;
     private Transform attachedSnakeHead = null;
 
@@ -46,13 +44,14 @@ public class PlayerMove : MonoBehaviour
         attachedSnakeHead = null;
     }
 
+    [SerializeField]
     private readonly Dictionary<JumpType, float> jumpMultipliers = new()
     {
-        
         { JumpType.Attach, 0.5f },
         { JumpType.EatFly, 1.5f },
         { JumpType.Mushroom, 2f },
-        {JumpType.Move, 0.5f }
+        { JumpType.Move, 0.5f },
+        { JumpType.MouseRelease, 1.5f}
     };
 
     Rigidbody2D rigid;
@@ -89,8 +88,6 @@ public class PlayerMove : MonoBehaviour
         maxVelocity = stats.MaxVelocity;
 
         rope.Init(stats.TongueSpeed);
-
-        jumpMultipliers[JumpType.MouseRelease] = mouseReleaseMultiplier;
     }
 
     private void FixedUpdate()
@@ -152,14 +149,18 @@ public class PlayerMove : MonoBehaviour
         }
 
 
-        if (RhythmManager.IsOnBeat)
-        {
 
-            if (context.started && isOnGround)
+         if (context.started && isOnGround)
+         {
+            if (RhythmManager.IsOnBeat)
             {
                 Jump(direction + Vector2.up, JumpType.Move);
             }
-        }
+            else
+            {
+                rigid.linearVelocityX *= 0.5f;
+            }
+         }
     }
 
 
@@ -185,7 +186,8 @@ public class PlayerMove : MonoBehaviour
         {
             if (rope.IsAttached)
             {
-                Jump(mouseDirection, JumpType.MouseRelease);
+                if(Mathf.Abs(rigid.linearVelocityX) > 0.3f)
+                Jump(rigid.linearVelocity.normalized, JumpType.MouseRelease);
             }
 
             rope.Released();
@@ -203,7 +205,6 @@ public class PlayerMove : MonoBehaviour
         {
             rigid.AddForce(jumpPower * multiplier * direction, ForceMode2D.Impulse);
 
-            Debug.Log(jumpType + "에 의해 " + direction + "방향으로 점프");
         }
         else
         {

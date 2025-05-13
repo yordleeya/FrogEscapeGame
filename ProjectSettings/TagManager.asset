@@ -11,6 +11,7 @@ TagManager:
   - Tongue
   - Land
   - Platform
+  - GoldenBall
   layers:
   - Default
   - TransparentFX

@@ -16,6 +16,8 @@ public class TongueAttach : MonoBehaviour
                     rope.ConnectSpringJoint();
                     rope.IsAttached = true;
 
+                    transform.parent = collision.transform;
+
                     rope.ResetTongue();
 
                     break;
@@ -28,6 +30,14 @@ public class TongueAttach : MonoBehaviour
                 default:
                     break;
             }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(transform.parent != null)
+        {
+            transform.parent = null;
         }
     }
 
