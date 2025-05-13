@@ -185,6 +185,12 @@ public class RopeAction : MonoBehaviour
         ResetTongue();
         ResetTongueTransform();
 
+        // 혀의 부모를 해제 (플랫폼에서 떨어질 때)
+        if (tongue != null)
+        {
+            tongue.transform.parent = null;
+        }
+
         if (wasAttached)
         {
             OnDisableEvent?.Invoke();
@@ -218,6 +224,15 @@ public class RopeAction : MonoBehaviour
             tongueRigidbody.linearVelocity = Vector3.zero;
             tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
             tongueRigidbody.angularVelocity = 0;
+        }
+    }
+
+    // 플랫폼에 혀가 부착될 때 호출
+    public void AttachTongueToPlatform(Transform platform)
+    {
+        if (tongue != null && platform != null)
+        {
+            tongue.transform.parent = platform;
         }
     }
 }

@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 3765946626720325964}
   - component: {fileID: 8104499519938417222}
   - component: {fileID: 5295926909592149737}
+  - component: {fileID: 6904313824907619829}
   m_Layer: 10
   m_Name: MovePlatform
   m_TagString: Platform
@@ -312,3 +313,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &6904313824907619829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7289655618373327849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3963dc56b60c5d4ebe333c6e9d99480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointArray: []
+  moveSpeed: 0
+  pointPositionArray: []
