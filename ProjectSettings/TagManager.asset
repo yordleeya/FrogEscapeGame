@@ -3,19 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags:
-  - Mushroom
-  - Coin
-  - Object
-  - Obstacle
-  - Tongue
-  - Land
-  - Platform
-<<<<<<< HEAD
-=======
-  - PoketPoint
->>>>>>> Won_Branch
-  - GoldenBall
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -23,13 +11,13 @@ TagManager:
   - 
   - Water
   - UI
-  - Player
-  - Obstacle
-  - Object
-  - Land
-  - Platform
-  - Tongue
-  - GoldenBall
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -50,26 +38,8 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: backGround
-    uniqueID: 2976643267
-    locked: 0
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: Land
-    uniqueID: 4269925885
-    locked: 0
-  - name: Obstacle
-    uniqueID: 2609026183
-    locked: 0
-  - name: Object
-    uniqueID: 3826102827
-    locked: 0
-  - name: Player
-    uniqueID: 1694565479
-    locked: 0
-  - name: UI
-    uniqueID: 2367337539
     locked: 0
   m_RenderingLayers:
   - Default
