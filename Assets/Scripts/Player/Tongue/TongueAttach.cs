@@ -7,43 +7,32 @@ public class TongueAttach : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision != null)
+        if (collision != null)
         {
-            switch(collision.tag)
+            switch (collision.tag)
             {
                 case "Platform":
                     rope.ConnectSpringJoint();
                     rope.IsAttached = true;
-<<<<<<< HEAD
 
-                    transform.parent = collision.transform;
+                    transform.parent = collision.transform; // HEAD 코드 유지
 
-=======
->>>>>>> Won_Branch
-                    rope.ResetTongue();
+                    rope.ResetTongue(); // Won_Branch 코드 유지
                     break;
                 case "Ground":
                     rope.ResetRopeState();
                     break;
                 case "Object":
                     break;
-            
-                
             }
         }
     }
-<<<<<<< HEAD
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(transform.parent != null)
+        if (transform.parent != null)
         {
             transform.parent = null;
         }
     }
-
-
-
-=======
->>>>>>> Won_Branch
 }
