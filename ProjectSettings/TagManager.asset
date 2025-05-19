@@ -3,17 +3,24 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Land
+  - Tongue
+  - GoldenBall
+  - PoketPoint
+  - Platform
+  - Coin
+  - Mushroom
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Platform
+  - GodlenBall
+  - Tongue
   - 
   - 
   - 

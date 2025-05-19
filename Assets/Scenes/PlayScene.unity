@@ -15773,7 +15773,7 @@ MonoBehaviour:
   rope: {fileID: 693536791}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1536
+    m_Bits: 0
 --- !u!120 &693536781
 LineRenderer:
   serializedVersion: 2
@@ -16236,7 +16236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ropeAttachLayer:
     serializedVersion: 2
-    m_Bits: 1792
+    m_Bits: 0
   maxTongueShotDistance: 1.5
   maxRopeDistance: 1.5
   minRopeDistance: 1
