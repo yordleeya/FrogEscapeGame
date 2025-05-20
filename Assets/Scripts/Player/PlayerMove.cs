@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using System.Collections;
+using System.Linq.Expressions;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -63,6 +64,9 @@ public class PlayerMove : MonoBehaviour
 
     bool isOnGround = false;
 
+    float tongueDelay;
+
+
     [SerializeField]
     RopeAction rope;
 
@@ -87,6 +91,7 @@ public class PlayerMove : MonoBehaviour
         speed = stats.Speed;
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
+        tongueDelay = stats.TongueDelay;
 
         rope.Init(stats.TongueSpeed);
     }
@@ -163,6 +168,8 @@ public class PlayerMove : MonoBehaviour
     }
 
 
+    bool isDelayed = false;
+
     public void OnRope(InputAction.CallbackContext context)
     {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
@@ -176,21 +183,46 @@ public class PlayerMove : MonoBehaviour
 
         if (context.started)
         {
-            if (RhythmManager.IsOnBeat && !rope.IsAttached)
+            if (RhythmManager.IsOnBeat)
             {
-                rope.RopeShoot(mouseDirection);
+                if (!isDelayed)
+                {
+                    rope.RopeShoot(mouseDirection);
+                }
+            }
+            else
+            {
+                delayCoroutine = StartCoroutine(RopeDelay());
             }
         }
         else if(context.canceled)
         {
             if (rope.IsAttached)
             {
-                if(Mathf.Abs(rigid.linearVelocityX) > 0.3f)
+                if(Mathf.Abs(rigid.linearVelocityX) > 0.5f)
                 Jump(rigid.linearVelocity.normalized, JumpType.MouseRelease);
             }
 
             rope.Released();
         }
+    }
+
+    Coroutine delayCoroutine = null;
+
+    IEnumerator RopeDelay()
+    {
+        if (delayCoroutine != null)
+        {
+            StopCoroutine(delayCoroutine);
+        }
+
+        isDelayed = true;
+
+        yield return new WaitForSeconds(tongueDelay);
+
+        Debug.Log("딜레이 종료");
+        isDelayed = false;
+        delayCoroutine = null;
     }
 
     public void Jump(Vector2 direction, JumpType jumpType = JumpType.MouseRelease)
@@ -215,7 +247,18 @@ public class PlayerMove : MonoBehaviour
     /// attach 상태일떄만 사용되는 함수, 그 외의 경우에는 사용 금지
     /// </summary>
     /// 
-   
+    public void Jump()
+    {
+        OnPlayerJump?.Invoke();
+
+        rigid.linearVelocityY = 0; // 기존 속도 초기화
+
+        Debug.Log("점프");
+
+         rigid.AddForce(jumpPower * jumpMultipliers[JumpType.MouseRelease] * direction, ForceMode2D.Impulse);
+
+    }
+
     public void SetTransparent(bool isTransparent)
     {
         if (TryGetComponent<SpriteRenderer>(out var sprite))

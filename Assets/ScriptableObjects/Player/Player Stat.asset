@@ -18,3 +18,4 @@ MonoBehaviour:
   maxVelocity: {x: 1.02, y: 1.63}
   tongueSpeed: 15
   maxTongueDistance: 3
+  tongueDelay: 0.5

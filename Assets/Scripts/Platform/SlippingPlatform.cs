@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
@@ -6,19 +7,20 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
     RopeAction rope;
 
     [SerializeField]
-    float linearDaming;
+    float slippingSpeed;
 
-    Rigidbody2D tongueRigid;
-    Rigidbody2D rigid;
+    [SerializeField]
+    float slipTime = 1f;
 
-    private void Awake()
+    float defaultSlipTime;
+
+    void Awake()
     {
-        rigid = GetComponent<Rigidbody2D>();
-        rigid.linearDamping = linearDaming;
+        defaultSlipTime = slipTime;
     }
-
     public void OnAttached(Rigidbody2D rigid, RigidbodyType2D bodyType)
     {
+        rigid.bodyType = bodyType;
     }
 
     public void OnDettaced(Rigidbody2D rigid)
@@ -27,13 +29,9 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("혀 감지 됨");
-
         if(collision.CompareTag("Tongue"))
         {
-            tongueRigid = collision.GetComponent<Rigidbody2D>();
-
-            OnAttached(tongueRigid, RigidbodyType2D.Dynamic);
+            OnAttached(collision.GetComponent<Rigidbody2D>(), RigidbodyType2D.Kinematic);
         }
     }
 
@@ -41,17 +39,26 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
     {
         if(collision.CompareTag("Tongue"))
         {
-            tongueRigid.linearVelocityX = 0;
+            collision.transform.position += Vector3.down * slippingSpeed * Time.fixedDeltaTime;
+
+
+            slipTime -= Time.fixedDeltaTime;
+
+            if(slipTime<=0)
+            {
+                rope.Released();
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Tongue") && rope.IsAttached)
+        if(collision.CompareTag("Tongue"))
         {
-            OnDettaced(tongueRigid);
+            slipTime = defaultSlipTime;
             rope.Released();
-        }
 
+        }
     }
+
 }

@@ -51,11 +51,11 @@ TagManager:
   - name: Platforms
     uniqueID: 2960295675
     locked: 0
-  - name: Player
-    uniqueID: 4119931975
-    locked: 0
   - name: GoldenBall
     uniqueID: 1555019003
+    locked: 0
+  - name: Player
+    uniqueID: 4119931975
     locked: 0
   m_RenderingLayers:
   - Default
