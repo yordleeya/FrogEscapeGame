@@ -5,8 +5,17 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
     [SerializeField]
     RopeAction rope;
 
+    [SerializeField]
+    float linearDaming;
+
+    Rigidbody2D tongueRigid;
     Rigidbody2D rigid;
 
+    private void Awake()
+    {
+        rigid = GetComponent<Rigidbody2D>();
+        rigid.linearDamping = linearDaming;
+    }
 
     public void OnAttached(Rigidbody2D rigid, RigidbodyType2D bodyType)
     {
@@ -22,9 +31,9 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
 
         if(collision.CompareTag("Tongue"))
         {
-            rigid = collision.GetComponent<Rigidbody2D>();
+            tongueRigid = collision.GetComponent<Rigidbody2D>();
 
-            OnAttached(rigid, RigidbodyType2D.Dynamic);
+            OnAttached(tongueRigid, RigidbodyType2D.Dynamic);
         }
     }
 
@@ -32,7 +41,7 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
     {
         if(collision.CompareTag("Tongue"))
         {
-            rigid.linearVelocityX = 0;
+            tongueRigid.linearVelocityX = 0;
         }
     }
 
@@ -40,7 +49,7 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
     {
         if (collision.CompareTag("Tongue") && rope.IsAttached)
         {
-            OnDettaced(rigid);
+            OnDettaced(tongueRigid);
             rope.Released();
         }
 

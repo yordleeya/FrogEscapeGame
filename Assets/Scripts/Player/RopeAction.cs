@@ -38,12 +38,6 @@ public class RopeAction : MonoBehaviour
 
     private bool isFlying = false;
 
-    private bool isSlipping = false;
-    private SlippingPlatform currentSlippingPlatform = null;
-    private float currentSlipDistance = 0f;
-    private Vector3 initialAttachPosition;
-
-
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
@@ -131,9 +125,8 @@ public class RopeAction : MonoBehaviour
         isShooting = false;
         isAttached = false;
         isFlying = false;
-        isSlipping = false;
-        currentSlippingPlatform = null;
-        currentSlipDistance = 0f;
+
+
 
         if (lineRenderer != null) lineRenderer.enabled = false;
 
@@ -149,6 +142,11 @@ public class RopeAction : MonoBehaviour
         {
             OnDisableEvent?.Invoke();
         }
+
+        tongueRigidbody.bodyType = RigidbodyType2D.Kinematic;
+        tongue.transform.parent = transform;
+        tongue.transform.localPosition = Vector3.zero ;
+
     }
 
     private void ResetTongueTransform()

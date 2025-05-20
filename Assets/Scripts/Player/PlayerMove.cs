@@ -199,6 +199,7 @@ public class PlayerMove : MonoBehaviour
 
         rigid.linearVelocityY = 0; // 기존 속도 초기화
 
+        Debug.Log("점프");
 
         if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
         {
@@ -214,29 +215,7 @@ public class PlayerMove : MonoBehaviour
     /// attach 상태일떄만 사용되는 함수, 그 외의 경우에는 사용 금지
     /// </summary>
     /// 
-    public void Jump()
-    {
-        if(rigid.linearVelocityY <= 0)
-        {
-            return;
-        }
-
-        OnPlayerJump?.Invoke();
-
-        Vector2 direction = Vector2.up;
-        JumpType jumpType = JumpType.Attach;
-
-        if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
-        {
-            rigid.AddForce(jumpPower * multiplier * direction, ForceMode2D.Impulse);
-
-            Debug.Log(jumpType + "에 의해 " + direction + "방향으로 점프");
-        }
-        else
-        {
-            Debug.LogWarning($"JumpType {jumpType}의 가중치가 설정되지 않았습니다.");
-        }
-    }
+   
     public void SetTransparent(bool isTransparent)
     {
         if (TryGetComponent<SpriteRenderer>(out var sprite))
