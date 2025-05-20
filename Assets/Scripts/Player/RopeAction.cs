@@ -6,11 +6,7 @@ using UnityEngine.UI;
 
 public class RopeAction : MonoBehaviour
 {
-    [FoldoutGroup("Attach Ray Settings"), Tooltip("로프가 부착될 수 있는 오브젝트의 레이어 마스크")]
-    [SerializeField] private LayerMask ropeAttachLayer = default;
-    [FoldoutGroup("Attach Ray Settings"), Tooltip("로프 발사 최대 거리")]
-    [SerializeField] private float maxTongueShotDistance = 10f;
-    private readonly float tongueShotDistance = 0;
+
 
     [FoldoutGroup("Rope Physics"), Tooltip("로프 최대 길이 (SpringJoint 거리)")]
     [SerializeField] private float maxRopeDistance = 5f;
@@ -53,39 +49,6 @@ public class RopeAction : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         springJoint = GetComponent<SpringJoint2D>();
         playerRigid = GetComponentInParent<Rigidbody2D>();
-
-        bool setupError = false;
-        if (playerRigid == null)
-        {
-            Debug.LogError("[RopeAction] Player Rigidbody2D not found in parent or self!", this);
-            setupError = true;
-        }
-        if (tongue == null)
-        {
-            Debug.LogError("[RopeAction] 'Tongue' Transform is not assigned in the Inspector!", this);
-            setupError = true;
-        }
-        if (tongueOrigin == null)
-        {
-            Debug.LogError("[RopeAction] 'Tongue Origin' Transform is not assigned in the Inspector!", this);
-            setupError = true;
-        }
-        if (tongueRigidbody == null)
-        {
-            Debug.LogError("[RopeAction] 'Tongue Rigidbody' is not assigned in the Inspector!", this);
-            setupError = true;
-        }
-        if (ropeAttachLayer == 0)
-        {
-            Debug.LogWarning("[RopeAction] 'Rope Attach Layer' is not set. Rope might not attach to anything.", this);
-        }
-
-        if (setupError)
-        {
-            Debug.LogError("[RopeAction] Setup is incomplete. Disabling component to prevent errors.", this);
-            enabled = false;
-            return;
-        }
 
         lineRenderer.positionCount = 2;
         lineRenderer.enabled = false;

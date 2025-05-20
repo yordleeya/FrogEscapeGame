@@ -60,6 +60,7 @@ public class PlayerMove : MonoBehaviour
     Vector2 maxVelocity;
     float moveX;
     bool isMoving = false;
+
     bool isOnGround = false;
 
     [SerializeField]
@@ -147,8 +148,6 @@ public class PlayerMove : MonoBehaviour
                 rigid.linearVelocityX *= 0.6f;
             }
         }
-
-
 
          if (context.started && isOnGround)
          {
