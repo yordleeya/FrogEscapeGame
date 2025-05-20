@@ -104,6 +104,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rope: {fileID: 0}
+  slippingSpeed: 1
+  slipTime: 0.5
 --- !u!50 &8752066878481892317
 Rigidbody2D:
   serializedVersion: 5
@@ -141,7 +143,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: bd92d31ed12f67445bd5ebde69cca585, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
