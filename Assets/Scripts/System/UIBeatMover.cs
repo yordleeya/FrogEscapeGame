@@ -37,6 +37,6 @@ public class UIBeatMover : MonoBehaviour
         rectTransform.anchoredPosition = startPosition;
 
         rectTransform
-            .DOAnchorPos(targetPosition, interval);
+            .DOAnchorPos(targetPosition, interval).OnComplete(()=>gameObject.SetActive(false));
     }
 }

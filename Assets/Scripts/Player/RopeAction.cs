@@ -27,6 +27,7 @@ public class RopeAction : MonoBehaviour
     [FoldoutGroup("Events"), Tooltip("로프가 해제되었을 때 호출되는 이벤트")]
     public UnityEvent OnDisableEvent;
 
+
     private LineRenderer lineRenderer;
     private SpringJoint2D springJoint;
     private Rigidbody2D playerRigid;

@@ -8,6 +8,8 @@ using System.Linq.Expressions;
 
 public class PlayerMove : MonoBehaviour
 {
+    public UnityEvent OnRopeDelayStart;
+    public UnityEvent OnRopeDelayEnd;
 
     public UnityEvent OnPlayerMove;
     public UnityEvent OnPlayerJump;
@@ -170,6 +172,8 @@ public class PlayerMove : MonoBehaviour
 
     bool isDelayed = false;
 
+
+
     public void OnRope(InputAction.CallbackContext context)
     {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
@@ -216,12 +220,16 @@ public class PlayerMove : MonoBehaviour
             StopCoroutine(delayCoroutine);
         }
 
+        OnRopeDelayStart?.Invoke();
         isDelayed = true;
 
         yield return new WaitForSeconds(tongueDelay);
 
         Debug.Log("딜레이 종료");
         isDelayed = false;
+
+        OnRopeDelayEnd?.Invoke();
+
         delayCoroutine = null;
     }
 
