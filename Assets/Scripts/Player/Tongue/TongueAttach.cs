@@ -16,8 +16,6 @@ public class TongueAttach : MonoBehaviour
                     rope.IsAttached = true;
 
                     transform.parent = collision.transform; // HEAD 코드 유지
-
-                    rope.ResetTongue(); // Won_Branch 코드 유지
                     break;
                 case "Ground":
                     rope.ResetRopeState();

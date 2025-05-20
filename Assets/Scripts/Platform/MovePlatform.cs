@@ -1,12 +1,17 @@
 using UnityEngine;
 
-public class MovePlatform : MonoBehaviour
+public class MovePlatform : MonoBehaviour, IFunctionalPlatform
 {
     [SerializeField] private Transform[] pointArray;
     [SerializeField] private float moveSpeed;
     [SerializeField] Vector2[] pointPositionArray;
    
     private bool isMovingToFirst = true;  // 첫 번째 포인트로 이동 중인지 확인하는 변수
+
+    public void OnDettaced(Rigidbody2D rigid)
+    {
+        throw new System.NotImplementedException();
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

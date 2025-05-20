@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1482846629126556603}
   - component: {fileID: 8752066878481892317}
   - component: {fileID: 3118905675711719022}
+  - component: {fileID: 6219630903377952810}
   m_Layer: 6
   m_Name: SlippingPlatform
   m_TagString: Platform
@@ -176,3 +177,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.1416478, y: 0.6843088}
   m_EdgeRadius: 0
+--- !u!114 &6219630903377952810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650238721945161063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24c4572e19ab8a94bac8d1ef4870418c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
