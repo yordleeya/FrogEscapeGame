@@ -21,6 +21,8 @@ public class RhythmManager : MonoBehaviour
     private static bool isOnBeat = false;
     public static bool IsOnBeat => isOnBeat;
 
+    public float Offset { get => offset;}
+
     private CancellationTokenSource cts;
 
     private void OnEnable()
