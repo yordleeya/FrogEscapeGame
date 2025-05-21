@@ -104,8 +104,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rope: {fileID: 0}
-  slippingSpeed: 1
-  slipTime: 0.5
+  slippingSpeed: 0.2
+  slipTime: 8
 --- !u!50 &8752066878481892317
 Rigidbody2D:
   serializedVersion: 5

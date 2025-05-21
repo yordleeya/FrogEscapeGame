@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Player Stat
   m_EditorClassIdentifier: 
   speed: 2.5
-  jumpPower: 2
+  jumpPower: 2.6
   powerGainSpeed: 2
   maxVelocity: {x: 1.02, y: 1.63}
   tongueSpeed: 15
-  maxTongueDistance: 3
+  maxTongueDistance: 4
   tongueDelay: 0.8
