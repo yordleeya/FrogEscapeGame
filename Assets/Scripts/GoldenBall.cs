@@ -6,7 +6,7 @@ public class GoldenBall : MonoBehaviour
     private bool isAttached = false;
     private Rigidbody2D rigid;
     private Collider2D col;
-    private bool isInvincible = false; // ¹«Àû »óÅÂ ÇÃ·¡±×
+    private bool isInvincible = false; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½
 
     private void Awake()
     {
@@ -16,7 +16,7 @@ public class GoldenBall : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Player¿Í ºÎµúÈ÷¸é PoketPoint·Î Áï½Ã ¼ø°£ÀÌµ¿ ¹× °íÁ¤
+        // Playerï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ PoketPointï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (!isAttached && collision.CompareTag("Player"))
         {
             Transform poketPoint = collision.transform.Find("PoketPoint");
@@ -31,17 +31,31 @@ public class GoldenBall : MonoBehaviour
                 rigid.bodyType = RigidbodyType2D.Kinematic;
                 rigid.linearVelocity = Vector2.zero;
                 col.isTrigger = true;
-                StartCoroutine(InvincibleForSeconds(1f)); // 1ÃÊ°£ ¹«Àû
+                StartCoroutine(InvincibleForSeconds(1f)); // 1ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½
             }
         }
-        // Land³ª Platform°ú ºÎµúÈ÷¸é PoketPoint¿¡¼­ °íÁ¤ ÇØÁ¦(ºĞ¸®) ¹× ¹Ù´ÚÀ¸·Î ¶³¾îÁü
+        // Landï¿½ï¿½ Platformï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ PoketPointï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ğ¸ï¿½) ï¿½ï¿½ ï¿½Ù´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         else if (isAttached && !isInvincible && (collision.CompareTag("Land") || collision.CompareTag("Platform")))
         {
             DetachFromPoketPoint();
         }
+
+
+        if (collision.gameObject.name == "Regenerate")
+        {
+            Transform resetPoint = collision.transform.Find("goldenballReset");
+            if (resetPoint != null)
+            {
+                transform.position = resetPoint.position;
+            }
+            else
+            {
+                Debug.LogWarning("goldenballReset ì˜¤ë¸Œì íŠ¸ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+            }
+        }
     }
 
-    // PoketPoint¿¡¼­ ºĞ¸®µÇ¾î ¹Ù´ÚÀ¸·Î ¶³¾îÁö°Ô ¸¸µå´Â ÇÔ¼ö
+    // PoketPointï¿½ï¿½ï¿½ï¿½ ï¿½Ğ¸ï¿½ï¿½Ç¾ï¿½ ï¿½Ù´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     private void DetachFromPoketPoint()
     {
         col.isTrigger = false;
@@ -50,11 +64,12 @@ public class GoldenBall : MonoBehaviour
         rigid.bodyType = RigidbodyType2D.Dynamic;
     }
 
-    // ÀÏÁ¤ ½Ã°£ µ¿¾È Land/Platform¿¡ ´ê¾Æµµ ¶³¾îÁöÁö ¾Ê°Ô ÇÏ´Â ¹«Àû ÄÚ·çÆ¾
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ Land/Platformï¿½ï¿½ ï¿½ï¿½Æµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾
     private IEnumerator InvincibleForSeconds(float seconds)
     {
         isInvincible = true;
         yield return new WaitForSeconds(seconds);
         isInvincible = false;
     }
+
 }
