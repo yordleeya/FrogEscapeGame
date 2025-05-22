@@ -20,6 +20,10 @@ public class MovePlatform : MonoBehaviour
 
     void Update()
     {
+        // point1, point2의 위치를 원래 위치로 고정
+        point1.position = point1Pos;
+        point2.position = point2Pos;
+
         // 저장된 월드 좌표로 이동
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
 
