@@ -8,8 +8,8 @@ using System.Linq.Expressions;
 
 public class PlayerMove : MonoBehaviour
 {
-    public UnityEvent OnRopeDelayStart;
-    public UnityEvent OnRopeDelayEnd;
+    //public UnityEvent OnRopeDelayStart;
+    //public UnityEvent OnRopeDelayEnd;
 
     public UnityEvent OnPlayerMove;
     public UnityEvent OnPlayerJump;
@@ -66,7 +66,7 @@ public class PlayerMove : MonoBehaviour
 
     bool isOnGround = false;
 
-    float tongueDelay;
+    //float tongueDelay;
 
 
     [SerializeField]
@@ -93,7 +93,7 @@ public class PlayerMove : MonoBehaviour
         speed = stats.Speed;
         jumpPower = stats.JumpPower;
         maxVelocity = stats.MaxVelocity;
-        tongueDelay = stats.TongueDelay;
+        //tongueDelay = stats.TongueDelay;
 
         rope.Init(stats.TongueSpeed);
     }
@@ -194,10 +194,10 @@ public class PlayerMove : MonoBehaviour
                     rope.RopeShoot(mouseDirection);
                 }
             }
-            else
-            {
-                delayCoroutine = StartCoroutine(RopeDelay());
-            }
+            //else
+            //{
+            //    delayCoroutine = StartCoroutine(RopeDelay());
+            //}
         }
         else if(context.canceled)
         {
@@ -213,25 +213,25 @@ public class PlayerMove : MonoBehaviour
 
     Coroutine delayCoroutine = null;
 
-    IEnumerator RopeDelay()
-    {
-        if (delayCoroutine != null)
-        {
-            StopCoroutine(delayCoroutine);
-        }
+    //IEnumerator RopeDelay()
+    //{
+    //    if (delayCoroutine != null)
+    //    {
+    //        StopCoroutine(delayCoroutine);
+    //    }
 
-        OnRopeDelayStart?.Invoke();
-        isDelayed = true;
+    //    OnRopeDelayStart?.Invoke();
+    //    isDelayed = true;
 
-        yield return new WaitForSeconds(tongueDelay);
+    //    yield return new WaitForSeconds(tongueDelay);
 
-        Debug.Log("딜레이 종료");
-        isDelayed = false;
+    //    Debug.Log("딜레이 종료");
+    //    isDelayed = false;
 
-        OnRopeDelayEnd?.Invoke();
+    //    OnRopeDelayEnd?.Invoke();
 
-        delayCoroutine = null;
-    }
+    //    delayCoroutine = null;
+    //}
 
     public void Jump(Vector2 direction, JumpType jumpType = JumpType.MouseRelease)
     {

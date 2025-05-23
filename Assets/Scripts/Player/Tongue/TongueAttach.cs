@@ -25,12 +25,4 @@ public class TongueAttach : MonoBehaviour
             }
         }
     }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (transform.parent != null)
-        {
-            transform.parent = null;
-        }
-    }
 }
