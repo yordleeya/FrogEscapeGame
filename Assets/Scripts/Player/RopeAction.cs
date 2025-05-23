@@ -55,9 +55,7 @@ public class RopeAction : MonoBehaviour
 
     private void Start()
     {
-        if (!enabled) return;
-
-        ResetTongueTransform();
+        Released();
     }
 
     private void Update()
@@ -70,8 +68,6 @@ public class RopeAction : MonoBehaviour
 
     public void Init(float _tongueSpeed)
     {
-        if (!enabled) return;
-
         tongueSpeed = _tongueSpeed;
     }
 

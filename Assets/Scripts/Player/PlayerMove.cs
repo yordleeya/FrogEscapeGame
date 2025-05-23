@@ -131,11 +131,8 @@ public class PlayerMove : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         direction = context.ReadValue<Vector2>();
-        if(context.started)
-        {
-            transform.localScale = new Vector3(-Mathf.Sign(direction.x), 1, 1);
-        }
-        else if (context.performed)
+
+        if (context.performed)
         {
             if (rope.IsAttached)
             {
@@ -160,6 +157,8 @@ public class PlayerMove : MonoBehaviour
          {
             if (RhythmManager.IsOnBeat)
             {
+                transform.localScale = new Vector3(-Mathf.Sign(direction.x), 1, 1);
+
                 Jump(direction + Vector2.up, JumpType.Move);
             }
             else
