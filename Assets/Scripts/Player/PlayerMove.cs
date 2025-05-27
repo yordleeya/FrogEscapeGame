@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using System.Collections;
 using System.Linq.Expressions;
+using UnityEngine.UIElements;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -13,7 +14,8 @@ public class PlayerMove : MonoBehaviour
 
     public UnityEvent OnPlayerMove;
     public UnityEvent OnPlayerJump;
-   
+    public UnityEvent OnBeatFailed;
+
     private bool isAttachedToSnake = false;
     private Transform attachedSnakeHead = null;
 
@@ -107,7 +109,6 @@ public class PlayerMove : MonoBehaviour
                 rigid.linearVelocityX = moveX;
             }
 
-            OnPlayerMove?.Invoke();
         }
 
         if (Physics2D.Raycast(transform.position, Vector2.down, 0.51f, groundLayer))
@@ -159,10 +160,16 @@ public class PlayerMove : MonoBehaviour
             {
                 transform.localScale = new Vector3(-Mathf.Sign(direction.x), 1, 1);
 
+
                 Jump(direction + Vector2.up, JumpType.Move);
+
+
+                OnPlayerMove?.Invoke();
+
             }
             else
             {
+                OnBeatFailed?.Invoke();
                 rigid.linearVelocityX *= 0.5f;
             }
          }
@@ -193,10 +200,11 @@ public class PlayerMove : MonoBehaviour
                     rope.RopeShoot(mouseDirection);
                 }
             }
-            //else
-            //{
-            //    delayCoroutine = StartCoroutine(RopeDelay());
-            //}
+            else
+            {
+                OnBeatFailed?.Invoke();
+                //delayCoroutine = StartCoroutine(RopeDelay());
+            }
         }
         else if(context.canceled)
         {
