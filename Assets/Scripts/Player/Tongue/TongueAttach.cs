@@ -14,6 +14,7 @@ public class TongueAttach : MonoBehaviour
                 case "Platform":
                     rope.ConnectSpringJoint();
                     rope.IsAttached = true;
+                    rope.OnAttached?.Invoke();
 
                     transform.parent = collision.transform; // HEAD 코드 유지
                     break;
