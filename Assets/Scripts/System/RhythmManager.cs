@@ -8,6 +8,7 @@ using System.Collections;
 
 public class RhythmManager : MonoBehaviour
 {
+    public UnityEvent OnGameStart;
     public UnityEvent OnBeatEnter;
     public UnityEvent OnBeatExit;
 
@@ -28,6 +29,7 @@ public class RhythmManager : MonoBehaviour
     private void OnEnable()
     {
         cts = new CancellationTokenSource();
+        OnGameStart?.Invoke();
         StartRhythmLoop(cts.Token).Forget();
     }
 

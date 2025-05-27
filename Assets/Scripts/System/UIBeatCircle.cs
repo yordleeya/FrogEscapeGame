@@ -6,7 +6,6 @@ public class UIBeatCircle : MonoBehaviour
 {
     [SerializeField] private float maxScale = 1.5f; // 퍼질 때 최대 크기
     [SerializeField] private float minScale = 0.5f; // 쪼그라들 때 최소 크기
-    [SerializeField] private float duration = 0.2f; // 애니메이션 시간
 
     [SerializeField] RhythmManager rm;
 
