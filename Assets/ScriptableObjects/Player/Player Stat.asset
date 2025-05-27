@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf504957f9749184c8053eb4ea0046e9, type: 3}
   m_Name: Player Stat
   m_EditorClassIdentifier: 
-  speed: 2.7
-  jumpPower: 2.5
+  speed: 2
+  jumpPower: 3
   powerGainSpeed: 2
   maxVelocity: {x: 1, y: 1.5}
   tongueSpeed: 15

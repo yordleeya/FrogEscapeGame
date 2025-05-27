@@ -97,7 +97,7 @@ public class RopeAction : MonoBehaviour
         isShooting = true;
         if (animator != null)
         {
-            animator.SetBool("IsRope", true);
+            animator.SetBool("isRope", true);
             Debug.Log("Rope 애니메이션 실행!");
         }
     }
@@ -125,8 +125,8 @@ public class RopeAction : MonoBehaviour
         ResetRopeState();
         if (animator != null)
         {
-            animator.SetBool("IsRope", false);
-            animator.SetBool("IsAttached", false);
+            animator.SetBool("isRope", false);
+            animator.SetBool("isAttached", false);
             Debug.Log("Idle 애니메이션 실행!");
         }
     }
@@ -163,7 +163,7 @@ public class RopeAction : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetBool("IsAttached", false);
+            animator.SetBool("isAttached", false);
         }
     }
 

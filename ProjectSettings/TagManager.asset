@@ -54,6 +54,9 @@ TagManager:
   - name: GoldenBall
     uniqueID: 1555019003
     locked: 0
+  - name: Tongue
+    uniqueID: 454955871
+    locked: 0
   - name: Player
     uniqueID: 4119931975
     locked: 0
