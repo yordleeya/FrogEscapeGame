@@ -111,6 +111,11 @@ public class RopeAction : MonoBehaviour
         springJoint.distance = Mathf.Clamp(currentDistance, minRopeDistance, maxRopeDistance);
 
         springJoint.enabled = true;
+        if (animator != null)
+        {
+            animator.SetBool("isAttached", true);
+            Debug.Log("입벌림(고정) 애니메이션 실행!");
+        }
     }
 
     public void Released()
@@ -121,6 +126,7 @@ public class RopeAction : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("IsRope", false);
+            animator.SetBool("IsAttached", false);
             Debug.Log("Idle 애니메이션 실행!");
         }
     }
@@ -135,8 +141,6 @@ public class RopeAction : MonoBehaviour
         isShooting = false;
         isAttached = false;
         isFlying = false;
-
-
 
         if (lineRenderer != null) lineRenderer.enabled = false;
 
@@ -157,6 +161,10 @@ public class RopeAction : MonoBehaviour
         tongue.transform.parent = transform;
         tongue.transform.localPosition = Vector3.zero ;
 
+        if (animator != null)
+        {
+            animator.SetBool("IsAttached", false);
+        }
     }
 
     private void ResetTongueTransform()
