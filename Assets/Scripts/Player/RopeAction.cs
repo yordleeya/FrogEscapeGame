@@ -39,11 +39,14 @@ public class RopeAction : MonoBehaviour
 
     private bool isFlying = false;
 
+    private Animator animator;
+
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
         springJoint = GetComponent<SpringJoint2D>();
         playerRigid = GetComponentInParent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         lineRenderer.positionCount = 2;
         lineRenderer.enabled = false;
@@ -92,6 +95,11 @@ public class RopeAction : MonoBehaviour
 
         OnShot?.Invoke();
         isShooting = true;
+        if (animator != null)
+        {
+            animator.SetBool("IsRope", true);
+            Debug.Log("Rope 애니메이션 실행!");
+        }
     }
 
     public void ConnectSpringJoint()
@@ -110,6 +118,11 @@ public class RopeAction : MonoBehaviour
         if (!enabled) return;
 
         ResetRopeState();
+        if (animator != null)
+        {
+            animator.SetBool("IsRope", false);
+            Debug.Log("Idle 애니메이션 실행!");
+        }
     }
 
     public void ResetRopeState()

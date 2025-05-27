@@ -6,7 +6,7 @@ public class GoldenBall : MonoBehaviour
     private bool isAttached = false;
     private Rigidbody2D rigid;
     private Collider2D col;
-    private bool isInvincible = false; // ���� ���� �÷���
+    private bool isInvincible = false; // 무적 상태
 
     private void Awake()
     {
@@ -16,7 +16,7 @@ public class GoldenBall : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Player�� �ε����� PoketPoint�� ��� �����̵� �� ����
+        // Player에 닿았을 때 PoketPoint에 공을 붙임
         if (!isAttached && collision.CompareTag("Player"))
         {
             Transform poketPoint = collision.transform.Find("PoketPoint");
@@ -31,17 +31,17 @@ public class GoldenBall : MonoBehaviour
                 rigid.bodyType = RigidbodyType2D.Kinematic;
                 rigid.linearVelocity = Vector2.zero;
                 col.isTrigger = true;
-                StartCoroutine(InvincibleForSeconds(1f)); // 1�ʰ� ����
+                StartCoroutine(InvincibleForSeconds(1f)); // 1초간 무적
             }
         }
-        // Land�� Platform�� �ε����� PoketPoint���� ���� ����(�и�) �� �ٴ����� ������
+        // Land나 Platform에 닿았을 때 PoketPoint에서 분리
         else if (isAttached && !isInvincible && (collision.CompareTag("Land") || collision.CompareTag("Platform")))
         {
             DetachFromPoketPoint();
         }
 
-
-        if (collision.gameObject.name == "Regenerate")
+        // Regenerate에 닿았을 때 (플레이어에 부착 중이면 무시)
+        if (!isAttached && collision.gameObject.name == "Regenerate")
         {
             Transform resetPoint = collision.transform.Find("goldenballReset");
             if (resetPoint != null)
@@ -53,9 +53,23 @@ public class GoldenBall : MonoBehaviour
                 Debug.LogWarning("goldenballReset 오브젝트를 찾을 수 없습니다.");
             }
         }
+
+        // GoldenBallPoint에 닿았을 때 (플레이어에 부착 중이면 무시)
+        if (!isAttached && collision.gameObject.name == "GoldenBallPoint")
+        {
+            Transform savePoint = collision.transform.Find("saveGoldenBall");
+            if (savePoint != null)
+            {
+                transform.position = savePoint.position;
+            }
+            else
+            {
+                Debug.LogWarning("saveGoldenBall 오브젝트를 찾을 수 없습니다.");
+            }
+        }
     }
 
-    // PoketPoint���� �и��Ǿ� �ٴ����� �������� ����� �Լ�
+    // PoketPoint에서 분리하는 함수
     private void DetachFromPoketPoint()
     {
         col.isTrigger = false;
@@ -64,7 +78,7 @@ public class GoldenBall : MonoBehaviour
         rigid.bodyType = RigidbodyType2D.Dynamic;
     }
 
-    // ���� �ð� ���� Land/Platform�� ��Ƶ� �������� �ʰ� �ϴ� ���� �ڷ�ƾ
+    // 무적 상태를 유지할 코루틴
     private IEnumerator InvincibleForSeconds(float seconds)
     {
         isInvincible = true;
