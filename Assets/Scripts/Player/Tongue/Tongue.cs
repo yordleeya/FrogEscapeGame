@@ -18,9 +18,9 @@ public class Tongue : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if(Vector3.Distance(player.position,transform.position) > maxTongueDistance)
+        float distance = Vector3.Distance(player.position, transform.position);
+        if (distance > maxTongueDistance && !ropeAction.IsAttached)
         {
-            Debug.Log("너무 멀어서 비활성화");
             ropeAction.Released();
         }
     }
