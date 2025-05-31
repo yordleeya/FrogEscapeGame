@@ -80,14 +80,15 @@ public class PlayerMove : MonoBehaviour
     RaycastHit2D hit;
     Vector2 direction = Vector2.right;
     SpriteRenderer spriteRenderer;
+    Animator animator;
 
     public Vector2 Direction { get => direction;}
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
         rigid = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         if (rigid == null)
         {
             Debug.LogError("Rigidbody2D가 Player 오브젝트에 할당되지 않았습니다.");
@@ -108,7 +109,6 @@ public class PlayerMove : MonoBehaviour
             {
                 rigid.linearVelocityX = moveX;
             }
-
         }
 
         if (Physics2D.Raycast(transform.position, Vector2.down, 0.51f, groundLayer))
@@ -127,27 +127,37 @@ public class PlayerMove : MonoBehaviour
             transform.position = attachedSnakeHead.position;
             return; // 이동 입력 무시
         }
+
+        if (animator != null && isOnGround && Mathf.Abs(rigid.linearVelocityX) < 0.01f)
+        {
+            animator.SetBool("isWalk", false);
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         direction = context.ReadValue<Vector2>();
 
+        if (context.started)
+        {
+            if (animator != null && isOnGround && Mathf.Abs(direction.x) > 0.01f)
+            {
+                animator.SetBool("isWalk", true);
+            }
+        }
+
         if (context.performed)
         {
             if (rope.IsAttached)
             {
                 isMoving = true;
-
                 moveX = direction.x * speed;
                 rigid.linearVelocityX += moveX;
             }
-
         }
         else if (context.canceled)
         {
             isMoving = false;
-
             if(rope.IsAttached)
             {
                 rigid.linearVelocityX *= 0.6f;
