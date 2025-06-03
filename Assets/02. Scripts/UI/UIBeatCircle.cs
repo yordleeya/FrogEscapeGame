@@ -17,27 +17,28 @@ public class UIBeatCircle : MonoBehaviour
         transform.localScale = Vector3.one * minScale; // 최소 크기로 시작
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        if (beatCoroutine != null) StopCoroutine(beatCoroutine);
-        beatCoroutine = StartCoroutine(BeatRoutine());
+        if (rm != null)
+            rm.OnBeatEnter.AddListener(OnBeat);
     }
 
-    private System.Collections.IEnumerator BeatRoutine()
+    private void OnDisable()
     {
-        while (true)
-        {
-            OnBeat();
-            float interval = 60f / rm.Bpm;
-            yield return new WaitForSeconds(interval);
-        }
+        if (rm != null)
+            rm.OnBeatEnter.RemoveListener(OnBeat);
+    }
+
+    private void Start()
+    {
+        // RhythmManager의 이벤트를 통해 OnBeat가 호출되므로 별도 처리 불필요
     }
 
     public void OnBeat()
     {
         float interval = 60f / rm.Bpm;
+        float tweenDuration = interval * 0.9f; // interval보다 약간 짧게
 
-        // 이전 Tween이 남아있으면 종료
         transform.DOKill();
 
         // scale을 minScale로 초기화 (다시 '생겨나는' 효과)
@@ -45,7 +46,7 @@ public class UIBeatCircle : MonoBehaviour
 
         // maxScale로 커지는 애니메이션
         transform
-            .DOScale(maxScale, interval)
+            .DOScale(maxScale, tweenDuration)
             .SetEase(Ease.OutQuad);
     }
 }
