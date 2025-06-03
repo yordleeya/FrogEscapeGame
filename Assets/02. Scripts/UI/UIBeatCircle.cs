@@ -7,6 +7,8 @@ public class UIBeatCircle : MonoBehaviour
 {
     [SerializeField] private float maxScale = 1.5f; // 퍼질 때 최대 크기
     [SerializeField] private float minScale = 0.5f; // 쪼그라들 때 최소 크기
+    [SerializeField] private float syncOffset = 0f; // 초 단위, Inspector에서 조정
+    [SerializeField] private float timingOffset = 0f; // 초 단위, Inspector에서 조정
 
     [SerializeField] RhythmManager rm;
 
@@ -31,22 +33,21 @@ public class UIBeatCircle : MonoBehaviour
 
     private void Start()
     {
-        // RhythmManager의 이벤트를 통해 OnBeat가 호출되므로 별도 처리 불필요
+        // 첫 비트 전에 미리 한 번 애니메이션 시작
+        OnBeat();
     }
 
     public void OnBeat()
     {
         float interval = 60f / rm.Bpm;
-        float tweenDuration = interval * 0.9f; // interval보다 약간 짧게
+        float tweenDuration = interval + timingOffset;
+        if (tweenDuration < 0.01f) tweenDuration = 0.01f; // 음수 방지
 
         transform.DOKill();
-
-        // scale을 minScale로 초기화 (다시 '생겨나는' 효과)
         transform.localScale = Vector3.one * minScale;
 
-        // maxScale로 커지는 애니메이션
         transform
             .DOScale(maxScale, tweenDuration)
-            .SetEase(Ease.OutQuad);
+            .SetEase(Ease.Linear);
     }
 }
