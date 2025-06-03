@@ -1,39 +1,53 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UIBeatCircle : MonoBehaviour
 {
     [SerializeField] private float maxScale = 1.5f; // 퍼질 때 최대 크기
     [SerializeField] private float minScale = 0.5f; // 쪼그라들 때 최소 크기
+    [SerializeField] private float syncOffset = 0f; // 초 단위, Inspector에서 조정
+    [SerializeField] private float timingOffset = 0f; // 초 단위, Inspector에서 조정
 
     [SerializeField] RhythmManager rm;
 
+    private Coroutine beatCoroutine;
+
     private void Awake()
     {
-        transform.localScale = Vector3.one * maxScale;
+        transform.localScale = Vector3.one * minScale; // 최소 크기로 시작
+    }
+
+    private void OnEnable()
+    {
+        if (rm != null)
+            rm.OnBeatEnter.AddListener(OnBeat);
+    }
+
+    private void OnDisable()
+    {
+        if (rm != null)
+            rm.OnBeatEnter.RemoveListener(OnBeat);
     }
 
     private void Start()
     {
-        // 테스트용: 1초 후 OnBeat() 호출
-        Invoke("OnBeat", 1f);
+        // 첫 비트 전에 미리 한 번 애니메이션 시작
+        OnBeat();
     }
 
     public void OnBeat()
     {
-        Debug.Log("OnBeat 호출됨");
         float interval = 60f / rm.Bpm;
+        float tweenDuration = interval + timingOffset;
+        if (tweenDuration < 0.01f) tweenDuration = 0.01f; // 음수 방지
 
-        // 이전 Tween이 남아있으면 종료
         transform.DOKill();
+        transform.localScale = Vector3.one * minScale;
 
-        // scale을 1로 초기화 (다시 '생겨나는' 효과)
-        transform.localScale = Vector3.one * maxScale;
-
-        // 0으로 줄어드는 애니메이션
         transform
-            .DOScale(minScale, interval)
-            .SetEase(Ease.OutQuad);
+            .DOScale(maxScale, tweenDuration)
+            .SetEase(Ease.Linear);
     }
 }

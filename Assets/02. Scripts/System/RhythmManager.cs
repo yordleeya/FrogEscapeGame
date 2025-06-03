@@ -26,11 +26,26 @@ public class RhythmManager : MonoBehaviour
 
     private CancellationTokenSource cts;
 
-    private void OnEnable()
+    void Start()
     {
+        StartRhythm();
+    }
+    
+    public void StartRhythm()
+    {
+        if (cts != null)
+        {
+            cts.Cancel();
+            cts.Dispose();
+        }
         cts = new CancellationTokenSource();
         OnGameStart?.Invoke();
         StartRhythmLoop(cts.Token).Forget();
+    }
+
+    private void OnEnable()
+    {
+        // ìë™ ì‹œì‘ ì œê±° (StartRhythmì„ ì™¸ë¶€ì—ì„œ ëª…ì‹œì ìœ¼ë¡œ í˜¸ì¶œ)
     }
 
     private void OnDisable()
@@ -54,10 +69,10 @@ public class RhythmManager : MonoBehaviour
             }
             catch (Exception ex)
             {
-                Debug.LogError($"OnBeatEnter.Invoke() ¿¹¿Ü ¹ß»ı: {ex}");
+                Debug.LogError($"OnBeatEnter.Invoke() ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½: {ex}");
             }
 
-            // OffsetDelay´Â º´·ÄÀûÀ¸·Î ½ÇÇà (isOnBeat¸¦ offset ÈÄ¿¡ false·Î ¸¸µé±â)
+            // OffsetDelayï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (isOnBeatï¿½ï¿½ offset ï¿½Ä¿ï¿½ falseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½)
             _ = OffsetDelay(token); // fire-and-forget
 
             await UniTask.Delay(TimeSpan.FromSeconds(interval), ignoreTimeScale: true, cancellationToken: token);
@@ -74,7 +89,7 @@ public class RhythmManager : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
-            // ¹«½Ã
+            // ï¿½ï¿½ï¿½ï¿½
         }
     }
 
