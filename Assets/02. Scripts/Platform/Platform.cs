@@ -13,6 +13,15 @@ public class Platform : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Tongue"))
+        {
+            collision.transform.parent = null;
+
+        }
+    }
+
     public void ResetTongue(Rigidbody2D tongueRigid)
     {
         tongueRigid.linearVelocity = Vector2.zero; // Vector3 → Vector2 로 명확히

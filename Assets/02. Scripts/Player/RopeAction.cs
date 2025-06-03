@@ -98,6 +98,7 @@ public class RopeAction : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("isRope", true);
+            Debug.Log("Rope 애니메이션 실행!");
         }
     }
 
@@ -113,6 +114,7 @@ public class RopeAction : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("isAttached", true);
+            Debug.Log("입벌림(고정) 애니메이션 실행!");
         }
     }
 
@@ -125,11 +127,13 @@ public class RopeAction : MonoBehaviour
         {
             animator.SetBool("isRope", false);
             animator.SetBool("isAttached", false);
+            Debug.Log("Idle 애니메이션 실행!");
         }
     }
 
     public void ResetRopeState()
     {
+        Debug.LogWarning("ResetRopeState() 호출됨! 혀가 해제됨!");
         if (!enabled) return;
 
         bool wasAttached = isAttached;
