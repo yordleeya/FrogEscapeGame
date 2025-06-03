@@ -218,6 +218,7 @@ public class PlayerMove : MonoBehaviour
         }
         else if(context.canceled)
         {
+            Debug.Log("마우스 입력 취소");
             if (rope.IsAttached)
             {
                 if(Mathf.Abs(rigid.linearVelocityX) > 0.5f)
@@ -255,8 +256,6 @@ public class PlayerMove : MonoBehaviour
         OnPlayerJump?.Invoke();
 
         rigid.linearVelocityY = 0; // 기존 속도 초기화
-
-        Debug.Log("점프");
 
         if (jumpMultipliers.TryGetValue(jumpType, out float multiplier))
         {

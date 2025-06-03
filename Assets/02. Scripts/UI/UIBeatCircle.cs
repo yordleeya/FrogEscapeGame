@@ -22,7 +22,6 @@ public class UIBeatCircle : MonoBehaviour
 
     public void OnBeat()
     {
-        Debug.Log("OnBeat 호출됨");
         float interval = 60f / rm.Bpm;
 
         // 이전 Tween이 남아있으면 종료
