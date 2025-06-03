@@ -9,9 +9,8 @@ public class PLAY_button : MonoBehaviour
         SceneManager.LoadScene("PlayScene");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Enable(UnityEngine.Video.VideoPlayer video)
     {
-        
+        gameObject.SetActive(true);
     }
 }
