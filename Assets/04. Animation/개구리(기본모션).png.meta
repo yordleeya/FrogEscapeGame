@@ -148,9 +148,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 32
-        width: 16
-        height: 16
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,10 +169,10 @@ TextureImporter:
       name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_1"
       rect:
         serializedVersion: 2
-        x: 16
-        y: 32
-        width: 16
-        height: 16
+        x: 32
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,10 +191,10 @@ TextureImporter:
       name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_2"
       rect:
         serializedVersion: 2
-        x: 32
-        y: 32
-        width: 16
-        height: 16
+        x: 64
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -214,9 +214,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 16
-        width: 16
-        height: 16
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,10 +235,10 @@ TextureImporter:
       name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_4"
       rect:
         serializedVersion: 2
-        x: 16
-        y: 16
-        width: 16
-        height: 16
+        x: 32
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,10 +257,10 @@ TextureImporter:
       name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_5"
       rect:
         serializedVersion: 2
-        x: 32
-        y: 16
-        width: 16
-        height: 16
+        x: 64
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -280,9 +280,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 16
-        height: 16
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -301,10 +301,10 @@ TextureImporter:
       name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_7"
       rect:
         serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 16
+        x: 32
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -323,10 +323,10 @@ TextureImporter:
       name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_8"
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
-        width: 16
-        height: 16
+        x: 64
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -337,6 +337,160 @@ TextureImporter:
       bones: []
       spriteID: dc8918767e1488948b66b866c21bfb4d
       internalID: -1894311360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_9"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a25b327fed9baf4cb90deb666a898e5
+      internalID: 1245975791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_10"
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 812f1a35efda8604e858aa238b4f2fb6
+      internalID: -1543415240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_11"
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dda3c1e5b8d916348a6774183437f8f4
+      internalID: 2052427769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_12"
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35645de3269e8114190c4e9579605be5
+      internalID: -455332777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_13"
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66a55f1b3248b8240975df1ede710a22
+      internalID: -1353361912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_14"
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f13c39dd8bf33494a9e232c0eff80e40
+      internalID: 1662633039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_15"
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f905d3af488c7a4590917f28a87079a
+      internalID: -1477490335
       vertices: []
       indices: 
       edges: []
@@ -357,6 +511,12 @@ TextureImporter:
     nameFileIdTable:
       "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_0": 3646656293033342646
       "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_1": -1991102288084252240
+      "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_10": -1543415240
+      "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_11": 2052427769
+      "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_12": -455332777
+      "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_13": -1353361912
+      "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_14": 1662633039
+      "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_15": -1477490335
       "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_2": -811681063666919733
       "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_3": 5418227207548171641
       "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_4": -6741751037144519721
@@ -364,6 +524,7 @@ TextureImporter:
       "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_6": 6423101488598250610
       "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_7": 1643807077
       "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_8": -1894311360
+      "\uAC1C\uAD6C\uB9AC(\uAE30\uBCF8\uBAA8\uC158)_9": 1245975791
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
