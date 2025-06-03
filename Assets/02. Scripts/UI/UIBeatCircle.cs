@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UIBeatCircle : MonoBehaviour
 {
@@ -9,15 +10,27 @@ public class UIBeatCircle : MonoBehaviour
 
     [SerializeField] RhythmManager rm;
 
+    private Coroutine beatCoroutine;
+
     private void Awake()
     {
-        transform.localScale = Vector3.one * maxScale;
+        transform.localScale = Vector3.one * minScale; // 최소 크기로 시작
     }
 
     private void Start()
     {
-        // 테스트용: 1초 후 OnBeat() 호출
-        Invoke("OnBeat", 1f);
+        if (beatCoroutine != null) StopCoroutine(beatCoroutine);
+        beatCoroutine = StartCoroutine(BeatRoutine());
+    }
+
+    private System.Collections.IEnumerator BeatRoutine()
+    {
+        while (true)
+        {
+            OnBeat();
+            float interval = 60f / rm.Bpm;
+            yield return new WaitForSeconds(interval);
+        }
     }
 
     public void OnBeat()
@@ -28,12 +41,12 @@ public class UIBeatCircle : MonoBehaviour
         // 이전 Tween이 남아있으면 종료
         transform.DOKill();
 
-        // scale을 1로 초기화 (다시 '생겨나는' 효과)
-        transform.localScale = Vector3.one * maxScale;
+        // scale을 minScale로 초기화 (다시 '생겨나는' 효과)
+        transform.localScale = Vector3.one * minScale;
 
-        // 0으로 줄어드는 애니메이션
+        // maxScale로 커지는 애니메이션
         transform
-            .DOScale(minScale, interval)
+            .DOScale(maxScale, interval)
             .SetEase(Ease.OutQuad);
     }
 }
