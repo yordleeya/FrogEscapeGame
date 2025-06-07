@@ -84,7 +84,10 @@ public class PlayerMove : MonoBehaviour
 
     public Vector2 Direction { get => direction;}
 
-    public ParticleSystem walkEffect; // 좌우 이동 시 파티클 재생용
+    public ParticleSystem walkEffectPrefabLeft;
+    public ParticleSystem walkEffectPrefabRight;
+
+    private ParticleSystem currentWalkEffect;
 
     private void Awake()
     {
@@ -146,9 +149,17 @@ public class PlayerMove : MonoBehaviour
             {
                 animator.SetBool("isWalk", true);
                 // 좌우 이동 시작 시 파티클 재생
-                if (walkEffect != null)
+                ParticleSystem prefab = transform.localScale.x < 0 ? walkEffectPrefabLeft : walkEffectPrefabRight;
+                if (prefab != null && RhythmManager.IsOnBeat)
                 {
-                    walkEffect.Play();
+                    Vector3 offset = transform.localScale.x < 0 ? new Vector3(-0.7f, 0.2f, 0f) : new Vector3(0.7f, 0.2f, 0f);
+                    Vector3 spawnPos = transform.position + offset;
+                    spawnPos.z = 0f;
+                    if (currentWalkEffect != null)
+                    {
+                        Destroy(currentWalkEffect.gameObject);
+                    }
+                    currentWalkEffect = Instantiate(prefab, spawnPos, Quaternion.identity);
                 }
             }
         }
@@ -175,14 +186,26 @@ public class PlayerMove : MonoBehaviour
          {
             if (RhythmManager.IsOnBeat)
             {
+                // 1. 방향 먼저 갱신
                 transform.localScale = new Vector3(-Mathf.Sign(direction.x), 1, 1);
 
+                // 2. 파티클 생성 (딱 한 번만)
+                ParticleSystem prefab = transform.localScale.x < 0 ? walkEffectPrefabLeft : walkEffectPrefabRight;
+                if (currentWalkEffect != null)
+                {
+                    Destroy(currentWalkEffect.gameObject);
+                }
+                if (prefab != null)
+                {
+                    Vector3 offset = transform.localScale.x < 0 ? new Vector3(-0.7f, 0.2f, 0f) : new Vector3(0.7f, 0.2f, 0f);
+                    Vector3 spawnPos = transform.position + offset;
+                    spawnPos.z = 0f;
+                    currentWalkEffect = Instantiate(prefab, spawnPos, Quaternion.identity);
+                }
 
+                // 3. 점프 및 이벤트
                 Jump(direction + Vector2.up, JumpType.Move);
-
-
                 OnPlayerMove?.Invoke();
-
             }
             else
             {
