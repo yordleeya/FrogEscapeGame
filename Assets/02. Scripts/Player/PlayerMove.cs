@@ -84,6 +84,8 @@ public class PlayerMove : MonoBehaviour
 
     public Vector2 Direction { get => direction;}
 
+    public ParticleSystem walkEffect; // 좌우 이동 시 파티클 재생용
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -143,6 +145,11 @@ public class PlayerMove : MonoBehaviour
             if (animator != null && isOnGround && Mathf.Abs(direction.x) > 0.01f)
             {
                 animator.SetBool("isWalk", true);
+                // 좌우 이동 시작 시 파티클 재생
+                if (walkEffect != null)
+                {
+                    walkEffect.Play();
+                }
             }
         }
 
