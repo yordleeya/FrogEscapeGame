@@ -12,6 +12,12 @@ public class TongueAttach : MonoBehaviour
             switch (collision.tag)
             {
                 case "Platform":
+
+                    if(rope.IsAttached)
+                    {
+                        return;
+                    }
+
                     rope.ConnectSpringJoint();
                     rope.IsAttached = true;
                     rope.OnAttached?.Invoke();
