@@ -623,6 +623,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 576
+  walkEffectPrefabLeft: {fileID: 0}
+  walkEffectPrefabRight: {fileID: 0}
 --- !u!50 &400667140306345837
 Rigidbody2D:
   serializedVersion: 5

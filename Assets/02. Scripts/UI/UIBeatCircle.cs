@@ -9,6 +9,7 @@ public class UIBeatCircle : MonoBehaviour
     [SerializeField] private float minScale = 0.5f; // 쪼그라들 때 최소 크기
     [SerializeField] private float syncOffset = 0f; // 초 단위, Inspector에서 조정
     [SerializeField] private float timingOffset = 0f; // 초 단위, Inspector에서 조정
+    [SerializeField] private float tweenDuration = 1.0f; // Inspector에서 직접 조정
 
     [SerializeField] RhythmManager rm;
 
@@ -39,8 +40,6 @@ public class UIBeatCircle : MonoBehaviour
 
     public void OnBeat()
     {
-        float interval = 60f / rm.Bpm;
-        float tweenDuration = interval + timingOffset;
         if (tweenDuration < 0.01f) tweenDuration = 0.01f; // 음수 방지
 
         transform.DOKill();
