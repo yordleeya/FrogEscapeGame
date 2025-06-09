@@ -7,6 +7,7 @@ public class GoldenBall : MonoBehaviour
     private Rigidbody2D rigid;
     private Collider2D col;
     private bool isInvincible = false; // 무적 상태
+    private bool isRegenerateCooldown = false; // Regenerate 쿨타임 플래그
 
     private void Awake()
     {
@@ -41,16 +42,23 @@ public class GoldenBall : MonoBehaviour
         }
 
         // Regenerate에 닿았을 때 (플레이어에 부착 중이면 무시)
-        if (!isAttached && collision.gameObject.name == "Regenerate")
+        if (!isAttached && !isRegenerateCooldown && collision.gameObject.name.StartsWith("Regenerate"))
         {
-            Transform resetPoint = collision.transform.Find("goldenballReset");
+            // Regenerate 이름에서 번호 추출 (예: Regenerate1 → 1)
+            string regenName = collision.gameObject.name;
+            string number = regenName.Replace("Regenerate", ""); // "1", "2" 등
+
+            string resetName = "goldenballReset" + number; // goldenballReset1, goldenballReset2 등
+
+            Transform resetPoint = collision.transform.Find(resetName);
             if (resetPoint != null)
             {
                 transform.position = resetPoint.position;
+                StartCoroutine(RegenerateCooldown(1f));
             }
             else
             {
-                Debug.LogWarning("goldenballReset 오브젝트를 찾을 수 없습니다.");
+                Debug.LogWarning($"{resetName} 오브젝트를 찾을 수 없습니다.");
             }
         }
 
@@ -86,4 +94,11 @@ public class GoldenBall : MonoBehaviour
         isInvincible = false;
     }
 
+    // Regenerate 쿨타임 코루틴
+    private IEnumerator RegenerateCooldown(float seconds)
+    {
+        isRegenerateCooldown = true;
+        yield return new WaitForSeconds(seconds);
+        isRegenerateCooldown = false;
+    }
 }
