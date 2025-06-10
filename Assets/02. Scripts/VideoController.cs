@@ -1,7 +1,5 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class VideoController : MonoBehaviour
@@ -9,7 +7,7 @@ public class VideoController : MonoBehaviour
     VideoPlayer video;
 
     [SerializeField]
-    PLAY_button startButton;
+    PLAY_button button;
 
     private void Awake()
     {
@@ -18,9 +16,9 @@ public class VideoController : MonoBehaviour
 
     private void Start()
     {
-        if (startButton != null)
+        if (button != null)
         {
-            video.loopPointReached += startButton.Enable;
+            video.loopPointReached += button.Enable;
         }
         else
         {
@@ -31,7 +29,6 @@ public class VideoController : MonoBehaviour
     private void PlayScene(VideoPlayer source)
     {
         SceneManager.LoadScene("PlayScene");
-
     }
 
 }
