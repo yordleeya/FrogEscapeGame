@@ -24,7 +24,6 @@ public class Coin : MonoBehaviour
 
     private void Start()
     {
-        fallSpeed = stats.FallSpeed;
         disableTime = stats.DisableTime;
         stunTime = stats.StunTime;
     }
@@ -45,12 +44,12 @@ public class Coin : MonoBehaviour
     }
     private void OnEnable()
     {
+        rigid.linearVelocity = Vector2.zero;
         rigid.linearVelocityY = fallSpeed;
         disableCoroutine = StartCoroutine(Disable());
     }
     private void OnDisable()
     {
-        rigid.linearVelocity = Vector2.zero;
         disableCoroutine = null;
     }
 
