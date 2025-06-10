@@ -46,6 +46,7 @@ public class RhythmManager : MonoBehaviour
         }
         cts = new CancellationTokenSource();
         OnGameStart?.Invoke();
+
         StartRhythmLoop(cts.Token).Forget();
     }
 
