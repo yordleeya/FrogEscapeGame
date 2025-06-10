@@ -18,7 +18,7 @@ public class GoldenballArrow : MonoBehaviour
         transform.position = player.position + offset;
     }
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         SetPosition();
 
