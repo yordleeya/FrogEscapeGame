@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -16,7 +18,20 @@ public class VideoController : MonoBehaviour
 
     private void Start()
     {
-        video.loopPointReached += startButton.Enable;
+        if (startButton != null)
+        {
+            video.loopPointReached += startButton.Enable;
+        }
+        else
+        {
+            video.loopPointReached += PlayScene;
+        }
+    }
+
+    private void PlayScene(VideoPlayer source)
+    {
+        SceneManager.LoadScene("PlayScene");
+
     }
 
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Events;
 
 public class GoldenBall : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class GoldenBall : MonoBehaviour
     private Collider2D col;
     private bool isInvincible = false; // 무적 상태
     private bool isRegenerateCooldown = false; // Regenerate 쿨타임 플래그
+
+    public UnityEvent OnBallAttached;
+    public UnityEvent OnBallDettached;
 
     private void Awake()
     {
@@ -23,6 +27,8 @@ public class GoldenBall : MonoBehaviour
             Transform poketPoint = collision.transform.Find("PoketPoint");
             if (poketPoint != null)
             {
+                OnBallAttached?.Invoke();
+
                 isAttached = true;
                 transform.SetParent(poketPoint);
                 transform.position = poketPoint.position;
@@ -38,6 +44,8 @@ public class GoldenBall : MonoBehaviour
         // Land나 Platform에 닿았을 때 PoketPoint에서 분리
         else if (isAttached && !isInvincible && (collision.CompareTag("Land") || collision.CompareTag("Platform")))
         {
+            OnBallDettached?.Invoke();
+
             DetachFromPoketPoint();
         }
 
