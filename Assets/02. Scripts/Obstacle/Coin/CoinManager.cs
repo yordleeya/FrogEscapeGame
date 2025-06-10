@@ -69,6 +69,7 @@ public class CoinManager : MonoBehaviour
             {
                 coinScript = c.GetComponent<Coin>();
                 c.SetActive(true);
+
                 c.transform.position = transform.position;
                 coinScript.Init(coinDisableTime, coinFallSpeed);
                 break;
