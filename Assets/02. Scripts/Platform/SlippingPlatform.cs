@@ -46,7 +46,10 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
 
             if(slipTime<=0)
             {
-                rope.Released();
+                if (rope != null)
+                {
+                    rope.Released();
+                }
             }
         }
     }
@@ -56,8 +59,10 @@ public class SlippingPlatform : MonoBehaviour, IDynamicPlatform
         if(collision.CompareTag("Tongue"))
         {
             slipTime = defaultSlipTime;
-            rope.Released();
-
+            if (rope != null)
+            {
+                rope.Released();
+            }
         }
     }
 
