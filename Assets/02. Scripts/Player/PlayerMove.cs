@@ -90,6 +90,7 @@ public class PlayerMove : MonoBehaviour
     private ParticleSystem currentWalkEffect;
 
     public float JumpPower { get => jumpPower; set => jumpPower = value; }
+    public float Speed { get => speed; set => speed = value; }
 
     private void Awake()
     {

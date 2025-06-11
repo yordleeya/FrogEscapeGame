@@ -37,8 +37,11 @@ public class Mushroom : MonoBehaviour
     IEnumerator ChangeJumpPowerCoroutine(PlayerMove playerMove)
     {
         float originalJumpPower = playerMove.JumpPower;
+        float originalSpeed = playerMove.Speed;
         playerMove.JumpPower = 4f;
+        playerMove.Speed = 3f;
         yield return new WaitForSeconds(6f);
         playerMove.JumpPower = originalJumpPower;
+        playerMove.Speed = originalSpeed;
     }
 }
