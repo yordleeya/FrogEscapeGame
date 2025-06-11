@@ -89,6 +89,8 @@ public class PlayerMove : MonoBehaviour
 
     private ParticleSystem currentWalkEffect;
 
+    public float JumpPower { get => jumpPower; set => jumpPower = value; }
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
