@@ -3,8 +3,6 @@ using UnityEngine;
 public class Wind : MonoBehaviour
 {
     public Vector2 windDirection = Vector2.right; // 바람 방향
-    public float baseWindForce = 10f; // 기본 바람 세기
-    public float windForceVariation = 5f; // 바람 세기 변화폭
     public float windChangeSpeed = 1f; // 바람 변화 속도
 
     public AudioClip windSound; // 바람 소리 클립
@@ -47,7 +45,7 @@ public class Wind : MonoBehaviour
                 Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {
-                    float dynamicWindForce = baseWindForce + Mathf.Sin(Time.time * windChangeSpeed) * windForceVariation;
+                    float dynamicWindForce = 6f + Mathf.Abs(Mathf.Sin(Time.time * windChangeSpeed)) * 3f;
                     rb.AddForce(windDirection.normalized * dynamicWindForce, ForceMode2D.Force);
                 }
             }
