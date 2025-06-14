@@ -90,3 +90,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attachSound: {fileID: 0}
+  audioSource: {fileID: 0}
