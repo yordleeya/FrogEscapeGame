@@ -1,29 +1,47 @@
 using UnityEngine;
+using System.Collections;
 
 public class Mushroom : MonoBehaviour
 {
     PlayerMove playerMove;
     public float bounceForce = 10f;
+    public float respawnTime = 5f;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if(playerMove == null)
+            // 버섯 비활성화 및 재활성화 코루틴 시작
+            StartCoroutine(RespawnCoroutine());
+
+            // 플레이어 점프력 변경 코루틴 시작
+            PlayerMove playerMove = collision.transform.GetComponent<PlayerMove>();
+            if (playerMove != null)
             {
-                playerMove = collision.transform.GetComponent<PlayerMove>();
+                StartCoroutine(ChangeJumpPowerCoroutine(playerMove));
             }
-            // 플레이어와 버섯의 위치 차이(방향) 계산
-            Vector2 direction = (collision.transform.position - transform.position).normalized;
-            float angle = 45f * Mathf.Deg2Rad; // 45도를 라디안으로 변환
-            float cos = Mathf.Cos(angle);
-            float sin = Mathf.Sin(angle);
-            Vector2 rotatedDirection = new Vector2(
-                direction.x * cos - direction.y * sin,
-                direction.x * sin + direction.y * cos
-            );
-            Vector2 bounceDirection = rotatedDirection * bounceForce;
-            playerMove.Jump(bounceDirection, PlayerMove.JumpType.Mushroom);
         }
+    }
+
+    IEnumerator RespawnCoroutine()
+    {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        Collider2D col = GetComponent<Collider2D>();
+        if (sr != null) sr.enabled = false;
+        if (col != null) col.enabled = false;
+        yield return new WaitForSeconds(respawnTime);
+        if (sr != null) sr.enabled = true;
+        if (col != null) col.enabled = true;
+    }
+
+    IEnumerator ChangeJumpPowerCoroutine(PlayerMove playerMove)
+    {
+        float originalJumpPower = playerMove.JumpPower;
+        float originalSpeed = playerMove.Speed;
+        playerMove.JumpPower = 4f;
+        playerMove.Speed = 3f;
+        yield return new WaitForSeconds(6f);
+        playerMove.JumpPower = originalJumpPower;
+        playerMove.Speed = originalSpeed;
     }
 }

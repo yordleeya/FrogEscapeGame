@@ -82,7 +82,8 @@ public class RopeAction : MonoBehaviour
 
     public void RopeShoot(Vector2 direction)
     {
-        if (isAttached || isFlying) return;
+        var playerMove = GetComponentInParent<PlayerMove>();
+        if ((playerMove != null && playerMove.IsStunned) || isAttached || isFlying) return;
 
         mouseDirection = direction;
 
