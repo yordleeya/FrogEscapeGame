@@ -35,11 +35,8 @@ public class Coin : MonoBehaviour
             {
                 playerMove = collision.GetComponent<PlayerMove>();
             }
-
-            //playerMove.StopMovement();
-            Invoke("playerMove.ResumeMovement", stunTime);
+            playerMove.Stun(stunTime);
         }
-
         gameObject.SetActive(false);
     }
     private void OnEnable()

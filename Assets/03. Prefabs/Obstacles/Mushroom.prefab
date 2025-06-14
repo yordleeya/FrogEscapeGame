@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bounceForce: 0.8
+  respawnTime: 5
 --- !u!1 &1893792022214263606
 GameObject:
   m_ObjectHideFlags: 0
