@@ -142,8 +142,30 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    bool isDelayed = false;
+    private bool isStunned = false;
+    public bool IsStunned => isStunned;
+
+    public void StopMovement()
+    {
+        isStunned = true;
+        rigid.linearVelocity = Vector2.zero;
+        if (rope != null && rope.IsAttached)
+        {
+            rope.Released(); // 로프 강제 해제
+        }
+        // 필요하다면 애니메이션, 파티클 등도 멈추기
+    }
+
+    public void ResumeMovement()
+    {
+        isStunned = false;
+    }
+
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (isStunned) return;
+
         direction = context.ReadValue<Vector2>();
 
         if (context.started)
@@ -218,13 +240,10 @@ public class PlayerMove : MonoBehaviour
          }
     }
 
-
-    bool isDelayed = false;
-
-
-
     public void OnRope(InputAction.CallbackContext context)
     {
+        if (isStunned) return;
+
         Vector2 mousePosition = Mouse.current.position.ReadValue();
 
         Vector3 worldMousePos3D = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
@@ -327,7 +346,30 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    public void Stun(float stunTime)
+    {
+        StopMovement();
+        StartCoroutine(StunCoroutine(stunTime));
+    }
 
+    private IEnumerator StunCoroutine(float stunTime)
+    {
+        yield return new WaitForSeconds(stunTime);
+        ResumeMovement();
+    }
+
+    private void Update()
+    {
+        if (isStunned) return;
+
+        if (UnityEngine.InputSystem.Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            if (rope != null && rope.IsAttached)
+            {
+                rope.Released();
+            }
+        }
+    }
 }
 
 
