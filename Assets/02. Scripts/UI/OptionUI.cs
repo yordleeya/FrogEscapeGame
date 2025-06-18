@@ -21,7 +21,6 @@ public class OptionUI : MonoBehaviour
 
     FullScreenMode fullScreenMode;
 
-
     public void SetVolume()
     {
         float volume = volumeSlider.value;
@@ -49,7 +48,6 @@ public class OptionUI : MonoBehaviour
 
     public void SetResolution()
     {
-
         string[] dimensions = resolution.options[resolution.value].text.Split("*");
 
         int width = int.Parse(dimensions[0]);

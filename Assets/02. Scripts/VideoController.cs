@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
+using UnityEngine.InputSystem;
 
 public class VideoController : MonoBehaviour
 {
@@ -26,9 +27,19 @@ public class VideoController : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            if (button != null)
+                button.Enable(video);
+            else
+                PlayScene(video);
+        }
+    }
+
     private void PlayScene(VideoPlayer source)
     {
         SceneManager.LoadScene("PlayScene");
     }
-
 }

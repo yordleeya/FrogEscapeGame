@@ -20,7 +20,8 @@ public class Signs : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SignsPanel.SetActive(true);
+            if (SignsPanel != null)
+                SignsPanel.SetActive(true);
         }
     }
 
@@ -28,7 +29,8 @@ public class Signs : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SignsPanel.SetActive(false);
+            if (SignsPanel != null)
+                SignsPanel.SetActive(false);
         }
     }
 }
