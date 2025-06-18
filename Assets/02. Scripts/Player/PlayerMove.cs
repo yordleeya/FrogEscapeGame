@@ -125,7 +125,7 @@ public class PlayerMove : MonoBehaviour
         while (true)
         {
             SavePlayerPosition(transform.position);
-            yield return new WaitForSeconds(10f);
+            yield return new WaitForSeconds(1f); // 1초마다 저장
         }
     }
 
