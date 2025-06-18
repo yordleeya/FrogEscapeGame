@@ -16,6 +16,13 @@ public class GoalTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            // GoldenBall 오브젝트 찾기
+            GoldenBall goldenBall = FindObjectOfType<GoldenBall>();
+            if (goldenBall == null || !goldenBall.IsAttached)
+            {
+                // 골든볼이 없거나, 부착되지 않은 경우 골 처리 안 함
+                return;
+            }
             // 기존 UI 비활성화
             if (goalTextUI != null) goalTextUI.SetActive(false);
             if (timerPanel != null) timerPanel.SetActive(false);

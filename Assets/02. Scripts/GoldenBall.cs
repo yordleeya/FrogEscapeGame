@@ -13,6 +13,8 @@ public class GoldenBall : MonoBehaviour
     public UnityEvent OnBallAttached;
     public UnityEvent OnBallDettached;
 
+    public bool IsAttached => isAttached;
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
