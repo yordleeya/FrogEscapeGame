@@ -109,6 +109,45 @@ public class PlayerMove : MonoBehaviour
         rope.Init(stats.TongueSpeed);
     }
 
+    private void Start()
+    {
+        // 게임 시작 시 위치 불러오기
+        Vector3 loadedPos = LoadPlayerPosition();
+        if (loadedPos != Vector3.zero)
+        {
+            transform.position = loadedPos;
+        }
+        StartCoroutine(AutoSavePosition());
+    }
+
+    private IEnumerator AutoSavePosition()
+    {
+        while (true)
+        {
+            SavePlayerPosition(transform.position);
+            yield return new WaitForSeconds(10f);
+        }
+    }
+
+    private void SavePlayerPosition(Vector3 position)
+    {
+        PlayerPrefs.SetFloat("PlayerPosX", position.x);
+        PlayerPrefs.SetFloat("PlayerPosY", position.y);
+        PlayerPrefs.SetFloat("PlayerPosZ", position.z);
+        PlayerPrefs.Save();
+    }
+
+    private Vector3 LoadPlayerPosition()
+    {
+        float x = PlayerPrefs.GetFloat("PlayerPosX", 0f);
+        float y = PlayerPrefs.GetFloat("PlayerPosY", 0f);
+        float z = PlayerPrefs.GetFloat("PlayerPosZ", 0f);
+        // 저장된 값이 모두 0이면 저장된 위치가 없다고 판단
+        if (x == 0f && y == 0f && z == 0f)
+            return Vector3.zero;
+        return new Vector3(x, y, z);
+    }
+
     private void FixedUpdate()
     {
         if (isMoving && rope.IsAttached)
