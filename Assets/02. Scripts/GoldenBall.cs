@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
 using System.Text;
+using UnityEngine.UI;
+using TMPro;
 
 public class GoldenBall : MonoBehaviour
 {
@@ -10,6 +12,17 @@ public class GoldenBall : MonoBehaviour
     private Collider2D col;
     private bool isInvincible = false; // 무적 상태
     private bool isRegenerateCooldown = false; // Regenerate 쿨타임 플래그
+    [SerializeField] private float collisionProtectionCooldownSeconds = 10f;
+    [SerializeField] private CanvasGroup collisionCooldownCanvasGroup;
+    [SerializeField] private Image collisionCooldownImage;
+    [SerializeField] private TMP_Text collisionCooldownText;
+    [SerializeField, Range(0f, 1f)] private float cooldownStartAlpha = 0.1f;
+    [SerializeField] private float collisionProtectionShieldSeconds = 2f;
+    private bool canIgnoreCollision = true;
+    private bool isCollisionProtectionCooldown = false;
+    private Coroutine collisionProtectionCoroutine;
+    private bool isTemporaryShieldActive = false;
+    private Coroutine collisionShieldCoroutine;
 
     public UnityEvent OnBallAttached;
     public UnityEvent OnBallDettached;
@@ -20,6 +33,7 @@ public class GoldenBall : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+        ResetCollisionCooldownUI();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -47,9 +61,11 @@ public class GoldenBall : MonoBehaviour
         // Land나 Platform에 닿았을 때 PoketPoint에서 분리
         else if (isAttached && !isInvincible && (collision.CompareTag("Land") || collision.CompareTag("Platform")))
         {
-            OnBallDettached?.Invoke();
-
-            DetachFromPoketPoint();
+            if (ShouldDetachAfterImpact())
+            {
+                OnBallDettached?.Invoke();
+                DetachFromPoketPoint();
+            }
         }
 
         TryHandleRegenerate(collision.transform);
@@ -97,6 +113,36 @@ public class GoldenBall : MonoBehaviour
         isRegenerateCooldown = true;
         yield return new WaitForSeconds(seconds);
         isRegenerateCooldown = false;
+    }
+
+    private void BeginCollisionProtectionCooldown()
+    {
+        if (collisionProtectionCoroutine != null)
+        {
+            StopCoroutine(collisionProtectionCoroutine);
+        }
+
+        collisionProtectionCoroutine = StartCoroutine(CollisionProtectionCooldownRoutine());
+    }
+
+    private IEnumerator CollisionProtectionCooldownRoutine()
+    {
+        isCollisionProtectionCooldown = true;
+        float elapsed = 0f;
+
+        while (elapsed < collisionProtectionCooldownSeconds)
+        {
+            elapsed += Time.deltaTime;
+            float remaining = Mathf.Max(0f, collisionProtectionCooldownSeconds - elapsed);
+            float normalized = Mathf.Clamp01(elapsed / collisionProtectionCooldownSeconds);
+            UpdateCollisionCooldownUI(normalized, remaining);
+            yield return null;
+        }
+
+        canIgnoreCollision = true;
+        isCollisionProtectionCooldown = false;
+        ResetCollisionCooldownUI();
+        collisionProtectionCoroutine = null;
     }
 
     private void TryHandleRegenerate(Transform target)
@@ -159,5 +205,86 @@ public class GoldenBall : MonoBehaviour
         }
 
         return builder.ToString();
+    }
+
+    private bool ShouldDetachAfterImpact()
+    {
+        if (canIgnoreCollision)
+        {
+            canIgnoreCollision = false;
+            if (!isCollisionProtectionCooldown)
+            {
+                BeginCollisionProtectionCooldown();
+            }
+            StartTemporaryShieldIfNeeded();
+            return false;
+        }
+
+        if (isTemporaryShieldActive)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void UpdateCollisionCooldownUI(float normalizedProgress, float remainingSeconds)
+    {
+        if (collisionCooldownCanvasGroup != null)
+        {
+            float targetAlpha = Mathf.Lerp(cooldownStartAlpha, 1f, normalizedProgress);
+            collisionCooldownCanvasGroup.alpha = targetAlpha;
+        }
+
+        if (collisionCooldownImage != null)
+        {
+            collisionCooldownImage.fillAmount = normalizedProgress;
+        }
+
+        if (collisionCooldownText != null)
+        {
+            collisionCooldownText.text = Mathf.CeilToInt(remainingSeconds).ToString();
+        }
+    }
+
+    private void ResetCollisionCooldownUI()
+    {
+        if (collisionCooldownCanvasGroup != null)
+        {
+            collisionCooldownCanvasGroup.alpha = 0f;
+        }
+
+        if (collisionCooldownImage != null)
+        {
+            collisionCooldownImage.fillAmount = 0f;
+        }
+
+        if (collisionCooldownText != null)
+        {
+            collisionCooldownText.text = string.Empty;
+        }
+    }
+
+    private void StartTemporaryShieldIfNeeded()
+    {
+        if (isTemporaryShieldActive)
+        {
+            return;
+        }
+
+        if (collisionShieldCoroutine != null)
+        {
+            StopCoroutine(collisionShieldCoroutine);
+        }
+
+        collisionShieldCoroutine = StartCoroutine(TemporaryShieldRoutine());
+    }
+
+    private IEnumerator TemporaryShieldRoutine()
+    {
+        isTemporaryShieldActive = true;
+        yield return new WaitForSeconds(collisionProtectionShieldSeconds);
+        isTemporaryShieldActive = false;
+        collisionShieldCoroutine = null;
     }
 }

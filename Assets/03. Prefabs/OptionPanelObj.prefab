@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5003221229111961520}
   - component: {fileID: 228973117180515384}
+  - component: {fileID: 7762023937413773460}
   m_Layer: 0
   m_Name: OptionPanelObj
   m_TagString: Untagged
@@ -42,6 +43,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c54c194cfd112e3458baaa8401899ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7762023937413773460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144520259111955360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a2bf9a7d71f3754ea1db6a8013e7038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   optionPanel: {fileID: 0}

@@ -165,9 +165,9 @@ MonoBehaviour:
   m_ComponentVersion: 2
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0
+  m_FalloffIntensity: -0
   m_Color: {r: 0.39569238, g: 0.39569238, b: 0.8490566, a: 1}
-  m_Intensity: 1.05
+  m_Intensity: 0.48
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 00000000fb8672b0
@@ -190,7 +190,7 @@ MonoBehaviour:
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0
+  m_PointLightInnerRadius: 4.64
   m_PointLightOuterRadius: 7.01
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
@@ -623,8 +623,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 576
-  walkEffectPrefabLeft: {fileID: 0}
-  walkEffectPrefabRight: {fileID: 0}
+  walkEffectPrefabLeft: {fileID: 3755388690259520735, guid: 1138620c68fbec044b71d0748e14b6e0, type: 3}
+  walkEffectPrefabRight: {fileID: 3755388690259520735, guid: 2ee7472f8c9009146bb079c708915543, type: 3}
 --- !u!50 &400667140306345837
 Rigidbody2D:
   serializedVersion: 5
@@ -897,7 +897,7 @@ AudioSource:
   m_GameObject: {fileID: 8399011021686690918}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: ca8b092ff305fa14196b2c8444f554c8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -1087,7 +1087,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.644
   m_Color: {r: 1, g: 0.7900441, b: 0.7528302, a: 1}
-  m_Intensity: 0.35
+  m_Intensity: 1.08
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 472c91f5
