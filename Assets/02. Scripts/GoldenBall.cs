@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
+using System.Text;
 
 public class GoldenBall : MonoBehaviour
 {
@@ -51,26 +52,7 @@ public class GoldenBall : MonoBehaviour
             DetachFromPoketPoint();
         }
 
-        // Regenerate에 닿았을 때 (플레이어에 부착 중이면 무시)
-        if (!isAttached && !isRegenerateCooldown && collision.gameObject.name.StartsWith("Regenerate"))
-        {
-            // Regenerate 이름에서 번호 추출 (예: Regenerate1 → 1)
-            string regenName = collision.gameObject.name;
-            string number = regenName.Replace("Regenerate", ""); // "1", "2" 등
-
-            string resetName = "goldenballReset" + number; // goldenballReset1, goldenballReset2 등
-
-            Transform resetPoint = collision.transform.Find(resetName);
-            if (resetPoint != null)
-            {
-                transform.position = resetPoint.position;
-                StartCoroutine(RegenerateCooldown(1f));
-            }
-            else
-            {
-                Debug.LogWarning($"{resetName} 오브젝트를 찾을 수 없습니다.");
-            }
-        }
+        TryHandleRegenerate(collision.transform);
 
         // GoldenBallPoint에 닿았을 때 (플레이어에 부착 중이면 무시)
         if (!isAttached && collision.gameObject.name == "GoldenBallPoint")
@@ -85,6 +67,11 @@ public class GoldenBall : MonoBehaviour
                 Debug.LogWarning("saveGoldenBall 오브젝트를 찾을 수 없습니다.");
             }
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        TryHandleRegenerate(collision.collider.transform);
     }
 
     // PoketPoint에서 분리하는 함수
@@ -110,5 +97,67 @@ public class GoldenBall : MonoBehaviour
         isRegenerateCooldown = true;
         yield return new WaitForSeconds(seconds);
         isRegenerateCooldown = false;
+    }
+
+    private void TryHandleRegenerate(Transform target)
+    {
+        if (isAttached || isRegenerateCooldown || target == null)
+        {
+            return;
+        }
+
+        Transform regenRoot = GetRegenerateRoot(target);
+        if (regenRoot == null)
+        {
+            return;
+        }
+
+        string suffix = ExtractDigits(regenRoot.name);
+        string resetName = string.IsNullOrEmpty(suffix) ? "goldenballReset" : $"goldenballReset{suffix}";
+
+        Transform resetPoint = regenRoot.Find(resetName);
+        if (resetPoint != null)
+        {
+            transform.position = resetPoint.position;
+            StartCoroutine(RegenerateCooldown(1f));
+        }
+        else
+        {
+            Debug.LogWarning($"{resetName} 오브젝트를 찾을 수 없습니다.");
+        }
+    }
+
+    private Transform GetRegenerateRoot(Transform current)
+    {
+        Transform iterator = current;
+        while (iterator != null)
+        {
+            if (iterator.name.StartsWith("Regenerate"))
+            {
+                return iterator;
+            }
+            iterator = iterator.parent;
+        }
+
+        return null;
+    }
+
+    private string ExtractDigits(string source)
+    {
+        if (string.IsNullOrEmpty(source))
+        {
+            return string.Empty;
+        }
+
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        foreach (char c in source)
+        {
+            if (char.IsDigit(c))
+            {
+                builder.Append(c);
+            }
+        }
+
+        return builder.ToString();
     }
 }
