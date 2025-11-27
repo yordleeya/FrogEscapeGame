@@ -109,14 +109,22 @@ public class PlayerMove : MonoBehaviour
         rope.Init(stats.TongueSpeed);
     }
 
+    [SerializeField]
+    private Transform defaultSpawnPoint;
+    private const string PlayerPosSavedKey = "PlayerPosSaved";
+
     private void Start()
     {
-        // 게임 시작 시 위치 불러오기
-        Vector3 loadedPos = LoadPlayerPosition();
-        if (loadedPos != Vector3.zero)
+        // 게임 시작 시 위치 불러오기 (없으면 기본 스폰 위치)
+        if (TryLoadPlayerPosition(out Vector3 loadedPos))
         {
             transform.position = loadedPos;
         }
+        else if (defaultSpawnPoint != null)
+        {
+            transform.position = defaultSpawnPoint.position;
+        }
+
         StartCoroutine(AutoSavePosition());
     }
 
@@ -134,18 +142,23 @@ public class PlayerMove : MonoBehaviour
         PlayerPrefs.SetFloat("PlayerPosX", position.x);
         PlayerPrefs.SetFloat("PlayerPosY", position.y);
         PlayerPrefs.SetFloat("PlayerPosZ", position.z);
+        PlayerPrefs.SetInt(PlayerPosSavedKey, 1);
         PlayerPrefs.Save();
     }
 
-    private Vector3 LoadPlayerPosition()
+    private bool TryLoadPlayerPosition(out Vector3 position)
     {
-        float x = PlayerPrefs.GetFloat("PlayerPosX", 0f);
-        float y = PlayerPrefs.GetFloat("PlayerPosY", 0f);
-        float z = PlayerPrefs.GetFloat("PlayerPosZ", 0f);
-        // 저장된 값이 모두 0이면 저장된 위치가 없다고 판단
-        if (x == 0f && y == 0f && z == 0f)
-            return Vector3.zero;
-        return new Vector3(x, y, z);
+        if (!PlayerPrefs.HasKey(PlayerPosSavedKey))
+        {
+            position = Vector3.zero;
+            return false;
+        }
+
+        float x = PlayerPrefs.GetFloat("PlayerPosX");
+        float y = PlayerPrefs.GetFloat("PlayerPosY");
+        float z = PlayerPrefs.GetFloat("PlayerPosZ");
+        position = new Vector3(x, y, z);
+        return true;
     }
 
     private void FixedUpdate()
